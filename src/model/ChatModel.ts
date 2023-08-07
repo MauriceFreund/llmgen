@@ -7,12 +7,14 @@ import {
 class ChatModel {
     configuration: Configuration;
     openai: OpenAIApi;
+    modelName: string;
 
-    constructor() {
+    constructor(modelName: string) {
         this.configuration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
         });
         this.openai = new OpenAIApi(this.configuration);
+        this.modelName = modelName;
     }
 
     async complete(prompt: string): Promise<string> {
@@ -25,7 +27,7 @@ class ChatModel {
                 },
             ];
             const completionParameters = {
-                model: 'gpt-3.5-turbo',
+                model: this.modelName,
                 messages,
             };
             const completion = await this.openai.createChatCompletion(
