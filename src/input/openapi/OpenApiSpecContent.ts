@@ -4,9 +4,10 @@ export interface OpenApiSpecContent {
     components: OpenApiSpecComponents;
     paths: {
         [path: string]: {
-            [httpMethod: string]: OpenApiSpecPath;
+            [httpMethod: string]: OpenApiSpecPathAttributes;
         };
     };
+    servers?: OpenApiSpecServer[];
 }
 
 export interface OpenApiSpecInfo {
@@ -31,7 +32,17 @@ export interface OpenApiSpecProperty {
     type: string;
 }
 
-export interface OpenApiSpecPath {
+export type OpenApiSpecPath = {
+    [path: string]: {
+        [httpMethod: string]: OpenApiSpecPathAttributes;
+    };
+};
+
+export interface OpenApiSpecPathAttributes {
     operationId: string;
     tags: string[];
+}
+
+export interface OpenApiSpecServer {
+    url: string;
 }

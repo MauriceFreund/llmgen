@@ -10,6 +10,8 @@ const jsonPath = './resources/reference-api.json';
 const configPath = './resources/configuration.json';
 
 specReader.readSpec(jsonPath).then((spec) => {
+    console.log(JSON.stringify(spec.splitSpec()));
+
     configReader.readConfiguration(configPath).then((configuration) => {
         const prompt = new PromptGenerator().generatePrompt(
             spec,
