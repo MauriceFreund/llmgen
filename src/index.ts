@@ -3,28 +3,34 @@ import OpenAPISpecReader from './input/openapi/OpenAPISpecReader';
 import PromptGenerator from './prompting/PromptGenerator';
 import ChatModel from './model/ChatModel';
 import GeneratorConfigurationReader from './input/configuration/GeneratorConfigurationReader';
+import { prettyFormat } from './util/Utility';
 
-const specReader = new OpenAPISpecReader();
-const configReader = new GeneratorConfigurationReader();
-const jsonPath = './resources/reference-api.json';
-const configPath = './resources/configuration.json';
+async function run() {
+    const specReader = new OpenAPISpecReader();
+    const configReader = new GeneratorConfigurationReader();
 
-specReader.readSpec(jsonPath).then((spec) => {
-    console.log(JSON.stringify(spec.splitSpec()));
+    const configPath = './resources/configuration.json';
 
-    configReader.readConfiguration(configPath).then((configuration) => {
-        const prompt = new PromptGenerator().generatePrompt(
-            spec,
-            configuration,
-        );
+    const config = await configReader.readConfiguration(configPath);
+    const spec = await specReader.readSpec(config.content.meta.inputPaths.openApi);
 
-        console.log(`Prompt: \n """${prompt}"""\n\n`);
+    const prompts = await new PromptGenerator().generatePrompts(spec, config);
 
-        const model = new ChatModel(configuration.content.meta.model);
+    for (const prompt of prompts) {
+        console.log(`Prompt: \n """${prettyFormat(prompt.messages)}"""\n\n`);
 
-        model
-            .complete(prompt)
-            .then((answer) => console.log(`Answer: \n """${answer}"""\n\n`))
-            .catch((err) => console.error(err));
-    });
-});
+        const model = new ChatModel(config.content.meta.model);
+
+        try {
+            const answer = await model.complete(prompt);
+            console.log(`Answer: \n """${answer}"""\n\n`);
+            console.log(
+                `############################################################################################`,
+            );
+        } catch (err) {
+            console.error(err);
+        }
+    }
+}
+
+run().then(() => console.log('Done.'));

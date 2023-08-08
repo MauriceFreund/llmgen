@@ -1,8 +1,5 @@
-import {
-    ChatCompletionRequestMessageRoleEnum,
-    Configuration,
-    OpenAIApi,
-} from 'openai';
+import { Configuration, OpenAIApi } from 'openai';
+import ChatPrompt from '../prompting/ChatPrompt';
 
 class ChatModel {
     configuration: Configuration;
@@ -17,18 +14,12 @@ class ChatModel {
         this.modelName = modelName;
     }
 
-    async complete(prompt: string): Promise<string> {
+    async complete(prompt: ChatPrompt): Promise<string> {
         let answer: string | undefined;
         try {
-            const messages = [
-                {
-                    role: 'user' as ChatCompletionRequestMessageRoleEnum,
-                    content: prompt,
-                },
-            ];
             const completionParameters = {
                 model: this.modelName,
-                messages,
+                messages: prompt.messages,
             };
             const completion = await this.openai.createChatCompletion(
                 completionParameters,
