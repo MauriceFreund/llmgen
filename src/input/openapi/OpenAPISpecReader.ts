@@ -1,11 +1,11 @@
 import path from 'path';
-import { promises as fs } from 'fs';
+import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import OpenApiSpec from './OpenApiSpec';
 import { OpenApiSpecContent } from './OpenApiSpecContent';
 
 class OpenApiSpecReader {
-    async readSpec(pathToSpecFile: string): Promise<OpenApiSpec> {
+    readSpec(pathToSpecFile: string): OpenApiSpec {
         const fileExtension = path.extname(pathToSpecFile);
         switch (fileExtension) {
             case '.yaml':
@@ -19,14 +19,14 @@ class OpenApiSpecReader {
         }
     }
 
-    private async readSpecYaml(pathToSpecFile: string): Promise<OpenApiSpec> {
-        const yamlContent = await fs.readFile(path.resolve(pathToSpecFile));
+    private readSpecYaml(pathToSpecFile: string): OpenApiSpec {
+        const yamlContent = fs.readFileSync(path.resolve(pathToSpecFile));
         const content = yaml.load(yamlContent.toString()) as OpenApiSpecContent;
         return new OpenApiSpec(content);
     }
 
-    private async readSpecJson(pathToSpecFile: string): Promise<OpenApiSpec> {
-        const yamlContent = await fs.readFile(path.resolve(pathToSpecFile));
+    private readSpecJson(pathToSpecFile: string): OpenApiSpec {
+        const yamlContent = fs.readFileSync(path.resolve(pathToSpecFile));
         const content = yaml.load(yamlContent.toString()) as OpenApiSpecContent;
         return new OpenApiSpec(content);
     }

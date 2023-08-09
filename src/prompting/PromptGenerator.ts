@@ -1,39 +1,38 @@
-import OpenApiSpec from '../input/openapi/OpenApiSpec';
-import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
 import SystemMessageGenerator from './SystemMessageGenerator';
 import ChatPrompt from './ChatPrompt';
 import UserMessageGenerator from './UserMessageGenerator';
+import GeneratorMemory from '../memory/GeneratorMemory';
+import { GeneratorMemoryEntry } from '../memory/GeneratorMemoryEntry';
+import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
 
 class PromptGenerator {
-    async generatePrompts(
-        openApiSpec: OpenApiSpec,
-        configuration: GeneratorConfiguration,
-    ): Promise<ChatPrompt[]> {
-        const smg = new SystemMessageGenerator(
-            configuration.content.meta.inputPaths.systemMessageTemplate,
-        );
-        const systemMessage = await smg.getMessage();
+    private _config: GeneratorConfiguration;
+    private _systemMessageGenerator: SystemMessageGenerator;
+    private _userMessageGenerator: UserMessageGenerator;
 
-        const splitSpec = openApiSpec.splitSpec();
-        const umg = new UserMessageGenerator(
-            configuration.content.meta.inputPaths.userMessageTemplate,
-        );
+    constructor(config: GeneratorConfiguration) {
+        this._config = config;
+        this._systemMessageGenerator = new SystemMessageGenerator(config);
+        this._userMessageGenerator = new UserMessageGenerator(config);
+    }
 
-        const schemaMessages = await Promise.all(
-            splitSpec.schemas.map(
-                async (schema) =>
-                    await umg.generateMessage(schema, splitSpec.metadata, configuration),
-            ),
-        );
-        const pathMessages = await Promise.all(
-            splitSpec.paths.map(
-                async (path) => await umg.generateMessage(path, splitSpec.metadata, configuration),
-            ),
-        );
+    generatePrompts(memory: GeneratorMemory): ChatPrompt[] {
+        const systemMessage = this._systemMessageGenerator.getMessage();
 
-        return [...schemaMessages, ...pathMessages].map(
-            (message) => new ChatPrompt([systemMessage, message]),
+        const messages = memory.getIncompleteEntries().map((entry) => {
+            return this._userMessageGenerator.generateMessage(entry.snippet, entry.metadata);
+        });
+
+        return messages.map((message) => new ChatPrompt([systemMessage, message]));
+    }
+
+    generatePrompt(memoryEntry: GeneratorMemoryEntry): ChatPrompt {
+        const systemMessage = this._systemMessageGenerator.getMessage();
+        const message = this._userMessageGenerator.generateMessage(
+            memoryEntry.snippet,
+            memoryEntry.metadata,
         );
+        return new ChatPrompt([systemMessage, message]);
     }
 }
 

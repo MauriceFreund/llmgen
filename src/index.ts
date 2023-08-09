@@ -4,6 +4,7 @@ import PromptGenerator from './prompting/PromptGenerator';
 import ChatModel from './model/ChatModel';
 import GeneratorConfigurationReader from './input/configuration/GeneratorConfigurationReader';
 import { prettyFormat } from './util/Utility';
+import GeneratorMemory from './memory/GeneratorMemory';
 
 async function run() {
     const specReader = new OpenAPISpecReader();
@@ -11,26 +12,28 @@ async function run() {
 
     const configPath = './resources/configuration.json';
 
-    const config = await configReader.readConfiguration(configPath);
-    const spec = await specReader.readSpec(config.content.meta.inputPaths.openApi);
+    const config = configReader.readConfiguration(configPath);
+    const spec = specReader.readSpec(config.content.meta.inputPaths.openApi);
 
-    const prompts = await new PromptGenerator().generatePrompts(spec, config);
+    const memory = new GeneratorMemory(spec, config);
 
-    for (const prompt of prompts) {
+    const promptGenerator = new PromptGenerator(config);
+
+    for (const entry of memory.getIncompleteEntries()) {
+        const prompt = promptGenerator.generatePrompt(entry);
         console.log(`Prompt: \n """${prettyFormat(prompt.messages)}"""\n\n`);
 
         const model = new ChatModel(config.content.meta.model);
 
         try {
             const answer = await model.complete(prompt);
-            console.log(`Answer: \n """${answer}"""\n\n`);
-            console.log(
-                `############################################################################################`,
-            );
+            memory.completeEntry(entry.id, answer);
         } catch (err) {
             console.error(err);
         }
     }
+
+    memory.log();
 }
 
 run().then(() => console.log('Done.'));

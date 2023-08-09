@@ -1,19 +1,22 @@
 import { ChatCompletionRequestMessage } from 'openai';
-import { promises as fs } from 'fs';
+import * as fs from 'fs';
 import path from 'path';
+import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
 
 class SystemMessageGenerator {
-    private readonly _templatePath: string;
+    private readonly _configuration: GeneratorConfiguration;
+    private readonly _template: string;
 
-    constructor(templatePath: string) {
-        this._templatePath = templatePath;
+    constructor(configuration: GeneratorConfiguration) {
+        this._configuration = configuration;
+        const templatePath = this._configuration.content.meta.inputPaths.systemMessageTemplate;
+        this._template = fs.readFileSync(path.resolve(templatePath)).toString();
     }
 
-    async getMessage(): Promise<ChatCompletionRequestMessage> {
-        const content = await fs.readFile(path.resolve(this._templatePath));
+    getMessage(): ChatCompletionRequestMessage {
         return {
             role: 'system',
-            content: content.toString(),
+            content: this._template,
         };
     }
 }

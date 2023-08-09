@@ -3,33 +3,34 @@ import { OpenApiSpecPath } from '../input/openapi/OpenApiSpecContent';
 import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
 import { ChatCompletionRequestMessage } from 'openai';
 import { prettyFormat } from '../util/Utility';
-import { promises as fs } from 'fs';
+import * as fs from 'fs';
 import path from 'path';
 import Mustache from 'mustache';
 
 class UserMessageGenerator {
-    private readonly _templatePath: string;
+    private readonly _configuration: GeneratorConfiguration;
+    private readonly _template: String;
 
-    constructor(templateFilePath: string) {
-        this._templatePath = templateFilePath;
+    constructor(configuration: GeneratorConfiguration) {
+        this._configuration = configuration;
+        const templateFilePath = this._configuration.content.meta.inputPaths.userMessageTemplate;
+        this._template = fs.readFileSync(path.resolve(templateFilePath)).toString();
     }
 
-    async generateMessage(
+    generateMessage(
         openApiSnippet: SplitSchema | OpenApiSpecPath,
         metadata: OpenApiSpecMetadata,
-        config: GeneratorConfiguration,
-    ): Promise<ChatCompletionRequestMessage> {
+    ): ChatCompletionRequestMessage {
         const view = {
-            config: prettyFormat(config.content.generator),
+            config: prettyFormat(this._configuration.content.generator),
             metadata: prettyFormat(metadata),
             openApiSnippet: prettyFormat(openApiSnippet),
         };
-        const template = await fs.readFile(path.resolve(this._templatePath));
-        const messageContent = Mustache.render(template.toString(), view);
-        return Promise.resolve({
+        const messageContent = Mustache.render(this._template.toString(), view);
+        return {
             role: 'user',
             content: messageContent,
-        });
+        };
     }
 }
 
