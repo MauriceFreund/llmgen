@@ -20,18 +20,15 @@ class ChatModel {
             const completionParameters = {
                 model: this.modelName,
                 messages: prompt.messages,
+                temperature: 0,
             };
-            const completion = await this.openai.createChatCompletion(
-                completionParameters,
-            );
+            const completion = await this.openai.createChatCompletion(completionParameters);
             answer = completion.data.choices[0].message?.content;
         } catch (e) {
             return Promise.reject(e);
         }
         if (answer === undefined) {
-            return Promise.reject(
-                'Error in ChatModel.complete: Answer from model was undefined.',
-            );
+            return Promise.reject('Error in ChatModel.complete: Answer from model was undefined.');
         }
         return Promise.resolve(answer);
     }
