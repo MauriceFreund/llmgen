@@ -1,4 +1,4 @@
-import { OpenApiSpecMetadata, SplitSchema } from '../input/openapi/SpecSplittingOutput';
+import { OpenApiSpecMetadata, SchemaSnippet } from '../input/openapi/SpecSplittingOutput';
 import { OpenApiSpecPath } from '../input/openapi/OpenApiSpecContent';
 import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
 import { ChatCompletionRequestMessage } from 'openai';
@@ -18,7 +18,7 @@ class UserMessageGenerator {
     }
 
     generateMessage(
-        openApiSnippet: SplitSchema | OpenApiSpecPath,
+        openApiSnippet: SchemaSnippet | OpenApiSpecPath,
         metadata: OpenApiSpecMetadata,
     ): ChatCompletionRequestMessage {
         const view = {

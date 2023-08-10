@@ -1,4 +1,4 @@
-import { SplitSchema } from './SpecSplittingOutput';
+import { PathSnippet, SchemaSnippet } from './SpecSplittingOutput';
 
 export interface OpenApiSpecContent {
     openapi: string;
@@ -49,4 +49,4 @@ export interface OpenApiSpecServer {
     url: string;
 }
 
-export type OpenApiSnippet = SplitSchema | OpenApiSpecPath;
+export type OpenApiSnippet = SchemaSnippet | PathSnippet;

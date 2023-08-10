@@ -4,6 +4,8 @@ import UserMessageGenerator from './UserMessageGenerator';
 import GeneratorMemory from '../memory/GeneratorMemory';
 import { GeneratorMemoryEntry } from '../memory/GeneratorMemoryEntry';
 import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
+import { OpenApiSnippet } from '../input/openapi/OpenApiSpecContent';
+import { ChatCompletionRequestMessage } from 'openai';
 
 class PromptGenerator {
     private _config: GeneratorConfiguration;
@@ -26,13 +28,30 @@ class PromptGenerator {
         return messages.map((message) => new ChatPrompt([systemMessage, message]));
     }
 
-    generatePrompt(memoryEntry: GeneratorMemoryEntry): ChatPrompt {
+    generatePrompt<T extends OpenApiSnippet>(
+        memoryEntry: GeneratorMemoryEntry<T>,
+        completedEntries: GeneratorMemoryEntry<T>[] = [],
+    ): ChatPrompt {
         const systemMessage = this._systemMessageGenerator.getMessage();
+        const previousMessages = completedEntries.flatMap((entry) =>
+            this.getMessagesFromCompletedMemoryEntry(entry),
+        );
         const message = this._userMessageGenerator.generateMessage(
             memoryEntry.snippet,
             memoryEntry.metadata,
         );
-        return new ChatPrompt([systemMessage, message]);
+        return new ChatPrompt([systemMessage, ...previousMessages, message]);
+    }
+
+    private getMessagesFromCompletedMemoryEntry(
+        entry: GeneratorMemoryEntry<OpenApiSnippet>,
+    ): ChatCompletionRequestMessage[] {
+        const request = this._userMessageGenerator.generateMessage(entry.snippet, entry.metadata);
+        const answer: ChatCompletionRequestMessage = {
+            role: 'assistant',
+            content: entry.answer,
+        };
+        return [request, answer];
     }
 }
 

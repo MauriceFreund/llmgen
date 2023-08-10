@@ -1,11 +1,12 @@
 import { OpenApiSpecPath, OpenApiSpecSchema } from './OpenApiSpecContent';
 
-export type SplitSchema = { [name: string]: OpenApiSpecSchema };
+export type SchemaSnippet = { [name: string]: OpenApiSpecSchema };
+export type PathSnippet = OpenApiSpecPath;
 
 export interface SpecSplittingOutput {
     metadata: OpenApiSpecMetadata;
-    schemas: SplitSchema[];
-    paths: OpenApiSpecPath[];
+    schemas: SchemaSnippet[];
+    paths: PathSnippet[];
 }
 
 export interface OpenApiSpecMetadata {

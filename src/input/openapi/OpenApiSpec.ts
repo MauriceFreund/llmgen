@@ -1,9 +1,5 @@
 import { OpenApiSpecContent, OpenApiSpecPath } from './OpenApiSpecContent';
-import {
-    OpenApiSpecMetadata,
-    SpecSplittingOutput,
-    SplitSchema,
-} from './SpecSplittingOutput';
+import { OpenApiSpecMetadata, SchemaSnippet, SpecSplittingOutput } from './SpecSplittingOutput';
 
 class OpenApiSpec {
     content: OpenApiSpecContent;
@@ -26,7 +22,7 @@ class OpenApiSpec {
         };
     }
 
-    private getSplitSchemas(): SplitSchema[] {
+    private getSplitSchemas(): SchemaSnippet[] {
         const schemas = this.content.components.schemas;
         return Object.keys(schemas).map((key) => ({ [key]: schemas[key] }));
     }
