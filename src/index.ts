@@ -3,7 +3,6 @@ import OpenAPISpecReader from './input/openapi/OpenAPISpecReader';
 import PromptGenerator from './prompting/PromptGenerator';
 import ChatModel from './model/ChatModel';
 import GeneratorConfigurationReader from './input/configuration/GeneratorConfigurationReader';
-import { prettyFormat } from './util/Utility';
 import GeneratorMemory from './memory/GeneratorMemory';
 import { GeneratorMemoryEntry } from './memory/GeneratorMemoryEntry';
 import GeneratorConfiguration from './input/configuration/GeneratorConfiguration';
@@ -17,7 +16,6 @@ async function promptModel<T extends OpenApiSnippet>(
 ) {
     const promptGenerator = new PromptGenerator(config);
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
-    console.log(`Prompt: \n """${prettyFormat(prompt.messages)}"""\n\n`);
 
     const model = new ChatModel(config.content.meta.model);
 
@@ -40,17 +38,22 @@ async function run() {
 
     const memory = new GeneratorMemory(spec, config);
 
+    console.info(`Initialized memory with ${memory.getIncompleteEntries().length} entries.`);
+
     for (const entry of memory.getIncompleteSchemaEntries()) {
         const completedEntries = memory.getCompleteSchemaEntries();
+        console.info('Prompting model with schema snippet.');
         await promptModel(entry, completedEntries, memory, config);
     }
 
-    for (const entry of memory.getCompletePathEntries()) {
+    for (const entry of memory.getIncompletePathEntries()) {
         const completedEntries = memory.getCompletePathEntries();
+        console.info('Prompting model with path snippet.');
         await promptModel(entry, completedEntries, memory, config);
     }
 
     memory.log();
+    memory.dump('./resources/memory-dump.json');
 }
 
 run().then(() => console.log('Done.'));

@@ -9,6 +9,8 @@ import {
 import OpenApiSpec from '../input/openapi/OpenApiSpec';
 import { randomUUID } from 'crypto';
 import { prettyFormat } from '../util/Utility';
+import * as fs from 'fs';
+import path from 'path';
 
 class GeneratorMemory {
     private _entries: Map<string, GeneratorMemoryEntry<OpenApiSnippet>>;
@@ -101,6 +103,10 @@ class GeneratorMemory {
 
         console.log(`**Complete Entries (${complete.length})**\n`);
         console.log(complete.map((entry) => prettyFormat(entry)));
+    }
+
+    dump(targetPath: string) {
+        fs.writeFileSync(path.resolve(targetPath), prettyFormat(this.getCompleteEntries()));
     }
 }
 
