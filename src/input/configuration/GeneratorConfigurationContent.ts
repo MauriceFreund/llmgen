@@ -10,6 +10,7 @@ export interface MetaConfiguration {
 
 export interface TargetConfiguration {
     targetLanguage: 'Python' | 'JavaScript' | 'Java';
+    comments: boolean;
 }
 
 export interface MetaConfigurationInputPaths {

@@ -7,6 +7,7 @@ import GeneratorMemory from './memory/GeneratorMemory';
 import { GeneratorMemoryEntry } from './memory/GeneratorMemoryEntry';
 import GeneratorConfiguration from './input/configuration/GeneratorConfiguration';
 import { OpenApiSnippet } from './input/openapi/OpenApiSpecContent';
+import ExampleReader from './example/selection/ExampleReader';
 
 async function promptModel<T extends OpenApiSnippet>(
     entry: GeneratorMemoryEntry<T>,
@@ -38,18 +39,27 @@ async function run() {
 
     const memory = new GeneratorMemory(spec, config);
 
+    const exampleReader = new ExampleReader();
+    const examples = exampleReader.readExamples();
+
     console.info(`Initialized memory with ${memory.getIncompleteEntries().length} entries.`);
 
     for (const entry of memory.getIncompleteSchemaEntries()) {
+        const schemaExampleEntries = examples
+            .filter((ex) => ex.entry.entryType === 'schema')
+            .map((ex) => ex.entry);
         const completedEntries = memory.getCompleteSchemaEntries();
         console.info('Prompting model with schema snippet.');
-        await promptModel(entry, completedEntries, memory, config);
+        await promptModel(entry, [...schemaExampleEntries, ...completedEntries], memory, config);
     }
 
     for (const entry of memory.getIncompletePathEntries()) {
+        const pathExampleEntries = examples
+            .filter((ex) => ex.entry.entryType === 'path')
+            .map((ex) => ex.entry);
         const completedEntries = memory.getCompletePathEntries();
         console.info('Prompting model with path snippet.');
-        await promptModel(entry, completedEntries, memory, config);
+        await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
     }
 
     memory.log();
