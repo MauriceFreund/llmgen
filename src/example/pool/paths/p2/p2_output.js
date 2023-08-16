@@ -1,3 +1,5 @@
+import Pet from '../model/Pet';
+
 /**
  * This file was auto generated. Do not modify its content.
  *

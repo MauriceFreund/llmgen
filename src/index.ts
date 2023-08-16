@@ -8,6 +8,7 @@ import { GeneratorMemoryEntry } from './memory/GeneratorMemoryEntry';
 import GeneratorConfiguration from './input/configuration/GeneratorConfiguration';
 import { OpenApiSnippet } from './input/openapi/OpenApiSpecContent';
 import ExampleReader from './example/selection/ExampleReader';
+import OutputWriter from './output/OutputWriter';
 
 async function promptModel<T extends OpenApiSnippet>(
     entry: GeneratorMemoryEntry<T>,
@@ -39,6 +40,8 @@ async function run() {
 
     const memory = new GeneratorMemory(spec, config);
 
+    const outputWriter = new OutputWriter(config);
+
     const exampleReader = new ExampleReader();
     const examples = exampleReader.readExamples();
 
@@ -52,7 +55,6 @@ async function run() {
         console.info('Prompting model with schema snippet.');
         await promptModel(entry, [...schemaExampleEntries, ...completedEntries], memory, config);
     }
-
     for (const entry of memory.getIncompletePathEntries()) {
         const pathExampleEntries = examples
             .filter((ex) => ex.entry.entryType === 'path')
@@ -64,6 +66,7 @@ async function run() {
 
     memory.log();
     memory.dump('./resources/memory-dump.json');
+    outputWriter.writeOutput(memory);
 }
 
 run().then(() => console.log('Done.'));

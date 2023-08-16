@@ -6,6 +6,7 @@ export interface GeneratorConfigurationContent {
 export interface MetaConfiguration {
     model: string;
     inputPaths: MetaConfigurationInputPaths;
+    outputDir: string;
 }
 
 export interface TargetConfiguration {
