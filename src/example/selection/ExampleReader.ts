@@ -10,13 +10,33 @@ import { OpenApiSnippet } from '../../input/openapi/OpenApiSpecContent';
 import { Example } from './Example';
 import { randomUUID } from 'crypto';
 import { GeneratorMemoryEntry } from '../../memory/GeneratorMemoryEntry';
+import GeneratorConfiguration from '../../input/configuration/GeneratorConfiguration';
 
 class ExampleReader {
-    private _examplePoolPath = path.resolve('src/example/pool/');
-    private _validAnswerFileExtensions = ['.js', '.py', '.java'];
+    private _examplePoolPath: string;
+    private _exampleFileExtension: '.js' | '.py' | '.java';
+
+    constructor(config: GeneratorConfiguration) {
+        switch (config.content.generator.targetLanguage) {
+            case 'Java':
+                this._exampleFileExtension = '.java';
+                this._examplePoolPath = path.resolve('src/example/pool/java');
+                break;
+            case 'Python':
+                this._exampleFileExtension = '.py';
+                this._examplePoolPath = path.resolve('src/example/pool/python');
+                break;
+            case 'JavaScript':
+                this._exampleFileExtension = '.js';
+                this._examplePoolPath = path.resolve('src/example/pool/js');
+                break;
+        }
+    }
 
     readExamples(): Example<OpenApiSnippet>[] {
-        return [...this.readSchemas(), ...this.readPaths()];
+        const examples = [...this.readSchemas(), ...this.readPaths()];
+        console.info(`Found ${examples.length} examples.`);
+        return examples;
     }
 
     readSchemas(): Example<SchemaSnippet>[] {
@@ -100,19 +120,7 @@ class ExampleReader {
 
     readAnswer(exampleLocationPath: string, exampleId: string): string {
         const answerFileName = exampleLocationPath + `/${exampleId}/${exampleId}_output`;
-        let content: string | undefined;
-        for (const extensionCandidate of this._validAnswerFileExtensions) {
-            try {
-                content = fs.readFileSync(answerFileName + extensionCandidate).toString();
-            } catch (e) {}
-        }
-        if (content === undefined) {
-            throw Error(
-                `Error in ExampleReader.readAnswer: No output file with name ${answerFileName} and valid` +
-                    `file extension was found. Valid extensions are ${this._validAnswerFileExtensions}`,
-            );
-        }
-        return content;
+        return fs.readFileSync(answerFileName + this._exampleFileExtension).toString();
     }
 }
 

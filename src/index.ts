@@ -42,7 +42,7 @@ async function run() {
 
     const outputWriter = new OutputWriter(config);
 
-    const exampleReader = new ExampleReader();
+    const exampleReader = new ExampleReader(config);
     const examples = exampleReader.readExamples();
 
     console.info(`Initialized memory with ${memory.getIncompleteEntries().length} entries.`);
