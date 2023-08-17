@@ -13,10 +13,12 @@ import { GeneratorMemoryEntry } from '../../memory/GeneratorMemoryEntry';
 import GeneratorConfiguration from '../../input/configuration/GeneratorConfiguration';
 
 class ExampleReader {
+    private _config: GeneratorConfiguration;
     private _examplePoolPath: string;
     private _exampleFileExtension: '.js' | '.py' | '.java';
 
     constructor(config: GeneratorConfiguration) {
+        this._config = config;
         switch (config.content.generator.targetLanguage) {
             case 'Java':
                 this._exampleFileExtension = '.java';
@@ -34,9 +36,26 @@ class ExampleReader {
     }
 
     readExamples(): Example<OpenApiSnippet>[] {
-        const examples = [...this.readSchemas(), ...this.readPaths()];
-        console.info(`Found ${examples.length} examples.`);
+        const examples = [...this.readSchemas(), ...this.readPaths()].filter((example) =>
+            this.exampleConfigMatchesGlobalConfig(example.config),
+        );
+        console.info(`Found ${examples.length} examples with matching configuration.`);
         return examples;
+    }
+
+    private exampleConfigMatchesGlobalConfig(exampleConfig: TargetConfiguration): boolean {
+        const exampleKeys = Object.keys(exampleConfig) as (keyof TargetConfiguration)[];
+        const configKeys = Object.keys(
+            this._config.content.generator,
+        ) as (keyof TargetConfiguration)[];
+
+        if (exampleKeys.length !== configKeys.length) {
+            return false;
+        }
+
+        return exampleKeys.every(
+            (key) => exampleConfig[key] === this._config.content.generator[key],
+        );
     }
 
     readSchemas(): Example<SchemaSnippet>[] {

@@ -13,5 +13,5 @@ class PetsApi:
     baseUrl = 'petstore.swagger.io/v1'
 
     def getStudents(self) -> List[Pet]:
-        response = requests.get(f'{baseUrl}/pets')
+        response = requests.get(f'{self.baseUrl}/pets')
         return [Pet(**pet) for pet in response.json()]

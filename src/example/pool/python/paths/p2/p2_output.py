@@ -19,5 +19,5 @@ class PetsApi:
         Returns:
             list[Pet]: A list of pets
         """
-        response = requests.get(f'{baseUrl}/pets')
+        response = requests.get(f'{self.baseUrl}/pets')
         return [Pet(**pet) for pet in response.json()]
