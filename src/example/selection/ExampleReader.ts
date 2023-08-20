@@ -75,6 +75,7 @@ class ExampleReader {
                 snippet,
                 answer,
                 entryType: 'schema',
+                isExample: true,
             };
 
             return {
@@ -113,6 +114,7 @@ class ExampleReader {
                 snippet,
                 answer,
                 entryType: 'path',
+                isExample: true,
             };
 
             return {

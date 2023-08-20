@@ -36,6 +36,9 @@ class OutputWriter {
         const modelDir = this._outDir + '/model/';
         const apiDir = this._outDir + '/api/';
         try {
+            fs.mkdirSync(this._outDir);
+        } catch {}
+        try {
             fs.mkdirSync(modelDir);
         } catch {}
         try {

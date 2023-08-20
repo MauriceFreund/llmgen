@@ -48,6 +48,7 @@ class GeneratorMemory {
             snippet,
             metadata,
             entryType,
+            isExample: false,
         };
         this._entries.set(id, newEntry);
     }

@@ -6,6 +6,7 @@ import { prettyFormat } from '../util/Utility';
 import * as fs from 'fs';
 import path from 'path';
 import Mustache from 'mustache';
+import { getUserMessageTemplate } from './templating/TemplateSelector';
 
 class UserMessageGenerator {
     private readonly _configuration: GeneratorConfiguration;
@@ -13,8 +14,7 @@ class UserMessageGenerator {
 
     constructor(configuration: GeneratorConfiguration) {
         this._configuration = configuration;
-        const templateFilePath = this._configuration.content.meta.inputPaths.userMessageTemplate;
-        this._template = fs.readFileSync(path.resolve(templateFilePath)).toString();
+        this._template = getUserMessageTemplate();
     }
 
     generateMessage(

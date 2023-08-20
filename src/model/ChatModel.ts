@@ -20,7 +20,7 @@ class ChatModel {
             const completionParameters = {
                 model: this.modelName,
                 messages: prompt.messages,
-                temperature: 0,
+                temperature: 1,
             };
             const completion = await this.openai.createChatCompletion(completionParameters);
             answer = completion.data.choices[0].message?.content;

@@ -2,21 +2,17 @@ import { ChatCompletionRequestMessage } from 'openai';
 import * as fs from 'fs';
 import path from 'path';
 import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
+import { MemoryEntryType } from '../memory/GeneratorMemoryEntry';
+import { getSystemMessageTemplate } from './templating/TemplateSelector';
 
 class SystemMessageGenerator {
-    private readonly _configuration: GeneratorConfiguration;
-    private readonly _template: string;
+    constructor() {}
 
-    constructor(configuration: GeneratorConfiguration) {
-        this._configuration = configuration;
-        const templatePath = this._configuration.content.meta.inputPaths.systemMessageTemplate;
-        this._template = fs.readFileSync(path.resolve(templatePath)).toString();
-    }
-
-    getMessage(): ChatCompletionRequestMessage {
+    getMessage(entryType: MemoryEntryType): ChatCompletionRequestMessage {
+        const template = getSystemMessageTemplate(entryType);
         return {
             role: 'system',
-            content: this._template,
+            content: template,
         };
     }
 }

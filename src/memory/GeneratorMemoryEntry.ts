@@ -12,6 +12,7 @@ export interface GeneratorMemoryEntry<T extends OpenApiSnippet> {
     snippet: T;
     metadata: OpenApiSpecMetadata;
     entryType: MemoryEntryType;
+    isExample: boolean;
     answer?: string;
 }
 

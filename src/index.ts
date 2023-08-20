@@ -53,7 +53,8 @@ async function run() {
             .map((ex) => ex.entry);
         const completedEntries = memory.getCompleteSchemaEntries();
         console.info('Prompting model with schema snippet.');
-        await promptModel(entry, [...schemaExampleEntries, ...completedEntries], memory, config);
+        const entries = completedEntries.length > 0 ? completedEntries : schemaExampleEntries;
+        await promptModel(entry, entries, memory, config);
     }
     for (const entry of memory.getIncompletePathEntries()) {
         const pathExampleEntries = examples
@@ -61,7 +62,8 @@ async function run() {
             .map((ex) => ex.entry);
         const completedEntries = memory.getCompletePathEntries();
         console.info('Prompting model with path snippet.');
-        await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
+        const entries = completedEntries.length > 0 ? completedEntries : pathExampleEntries;
+        await promptModel(entry, entries, memory, config);
     }
 
     memory.log();
