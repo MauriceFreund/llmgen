@@ -1,25 +1,23 @@
 {
-  "/pets": {
-    "get": {
-      "summary": "List all pets",
-      "operationId": "listPets",
-      "tags": [
-        "pets"
-      ],
-      "responses": {
-        "200": {
-          "description": "An array of pets",
-          "schema": {
-            "$ref": "#/definitions/Pets"
-          }
-        },
-        "default": {
-          "description": "unexpected error",
-          "schema": {
-            "$ref": "#/definitions/Error"
-          }
+    "/pets": {
+        "get": {
+            "summary": "List all pets",
+            "": "listPets",
+            "tags": ["pets"],
+            "responses": {
+                "200": {
+                    "description": "An array of pets",
+                    "schema": {
+                        "$ref": "#/definitions/Pets"
+                    }
+                },
+                "default": {
+                    "description": "unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }

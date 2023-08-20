@@ -3,9 +3,9 @@ import Pet from '../model/Pet';
 /**
  * This file was auto generated. Do not modify its content.
  *
- * @file PetsApi
+ * @file ListPetsRequest
  */
-class PetsApi {
+class ListPetsRequest {
     baseUrl = 'petstore.swagger.io/v1';
 
     /**
@@ -20,4 +20,4 @@ class PetsApi {
     }
 }
 
-export default PetsApi;
+export default ListPetsRequest;

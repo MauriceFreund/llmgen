@@ -1,7 +1,7 @@
 /**
  * This file was auto generated. Do not modify its content.
  *
- * @file PetsApi
+ * @file ListPetsRequest
  */
 
 package llmgen.apiclient.api;
@@ -17,13 +17,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-public class PetsApi {
+public class ListPetsRequest {
 
     private final HttpClient client;
     private final ObjectMapper mapper;
     private final String baseUrl;
 
-    public PetsApi() {
+    public ListPetsRequest() {
         client = HttpClient.newHttpClient();
         mapper = new ObjectMapper();
         baseUrl = "petstore.swagger.io/v1";

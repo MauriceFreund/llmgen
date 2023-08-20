@@ -19,6 +19,8 @@ async function promptModel<T extends OpenApiSnippet>(
     const promptGenerator = new PromptGenerator(config);
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
 
+    console.log(prompt);
+
     const model = new ChatModel(config.content.meta.model);
 
     try {
@@ -64,7 +66,7 @@ async function run() {
         await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
     }
 
-    memory.log();
+    // memory.log();
     memory.dump('./resources/memory-dump.json');
     outputWriter.writeOutput(memory);
 }
