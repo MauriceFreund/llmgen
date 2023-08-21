@@ -16,6 +16,4 @@ export interface TargetConfiguration {
 
 export interface MetaConfigurationInputPaths {
     openApi: string;
-    systemMessageTemplate: string;
-    userMessageTemplate: string;
 }

@@ -14,25 +14,26 @@ class PromptGenerator {
 
     constructor(config: GeneratorConfiguration) {
         this._config = config;
-        this._systemMessageGenerator = new SystemMessageGenerator(config);
+        this._systemMessageGenerator = new SystemMessageGenerator();
         this._userMessageGenerator = new UserMessageGenerator(config);
     }
 
     generatePrompts(memory: GeneratorMemory): ChatPrompt[] {
-        const systemMessage = this._systemMessageGenerator.getMessage();
-
-        const messages = memory.getIncompleteEntries().map((entry) => {
-            return this._userMessageGenerator.generateMessage(entry.snippet, entry.metadata);
+        return memory.getIncompleteEntries().map((entry) => {
+            const systemMessage = this._systemMessageGenerator.getMessage(entry.entryType);
+            const message = this._userMessageGenerator.generateMessage(
+                entry.snippet,
+                entry.metadata,
+            );
+            return new ChatPrompt([systemMessage, message]);
         });
-
-        return messages.map((message) => new ChatPrompt([systemMessage, message]));
     }
 
     generatePrompt<T extends OpenApiSnippet>(
         memoryEntry: GeneratorMemoryEntry<T>,
         completedEntries: GeneratorMemoryEntry<T>[] = [],
     ): ChatPrompt {
-        const systemMessage = this._systemMessageGenerator.getMessage();
+        const systemMessage = this._systemMessageGenerator.getMessage(memoryEntry.entryType);
         const previousMessages = completedEntries.flatMap((entry) =>
             this.getMessagesFromCompletedMemoryEntry(entry),
         );
