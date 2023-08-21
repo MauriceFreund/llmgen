@@ -35,7 +35,7 @@ async function run() {
     const specReader = new OpenAPISpecReader();
     const configReader = new GeneratorConfigurationReader();
 
-    const configPath = './resources/configuration.json';
+    const configPath = process.argv[2];
 
     const config = configReader.readConfiguration(configPath);
     const spec = specReader.readSpec(config.content.meta.inputPaths.openApi);
@@ -66,8 +66,6 @@ async function run() {
         await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
     }
 
-    // memory.log();
-    memory.dump('./resources/memory-dump.json');
     outputWriter.writeOutput(memory);
 }
 
