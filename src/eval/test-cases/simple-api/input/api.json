@@ -11,7 +11,7 @@
   ],
   "components": {
     "schemas": {
-      "student": {
+      "Student": {
         "type": "object",
         "required": [
           "id",
@@ -30,7 +30,7 @@
           }
         }
       },
-      "exam": {
+      "Exam": {
         "type": "object",
         "required": [
           "id",

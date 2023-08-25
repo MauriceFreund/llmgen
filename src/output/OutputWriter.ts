@@ -36,11 +36,11 @@ class OutputWriter {
         const modelDir = this._outDir + '/model/';
         const apiDir = this._outDir + '/api/';
         try {
-            fs.mkdirSync(modelDir);
-        } catch {}
+            fs.mkdirSync(modelDir, { recursive: true });
+        } catch { }
         try {
-            fs.mkdirSync(apiDir);
-        } catch {}
+            fs.mkdirSync(apiDir, { recursive: true });
+        } catch { }
 
         schemaAnswers.forEach((schemaAnswer) => {
             const fileName =

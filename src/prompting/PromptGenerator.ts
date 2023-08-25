@@ -8,12 +8,10 @@ import { OpenApiSnippet } from '../input/openapi/OpenApiSpecContent';
 import { ChatCompletionRequestMessage } from 'openai';
 
 class PromptGenerator {
-    private _config: GeneratorConfiguration;
     private _systemMessageGenerator: SystemMessageGenerator;
     private _userMessageGenerator: UserMessageGenerator;
 
     constructor(config: GeneratorConfiguration) {
-        this._config = config;
         this._systemMessageGenerator = new SystemMessageGenerator();
         this._userMessageGenerator = new UserMessageGenerator(config);
     }

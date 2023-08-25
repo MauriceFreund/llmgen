@@ -9,6 +9,7 @@ import GeneratorConfiguration from './input/configuration/GeneratorConfiguration
 import { OpenApiSnippet } from './input/openapi/OpenApiSpecContent';
 import ExampleReader from './example/selection/ExampleReader';
 import OutputWriter from './output/OutputWriter';
+import { prettyFormat } from './util/Utility';
 
 async function promptModel<T extends OpenApiSnippet>(
     entry: GeneratorMemoryEntry<T>,
@@ -19,7 +20,7 @@ async function promptModel<T extends OpenApiSnippet>(
     const promptGenerator = new PromptGenerator(config);
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
 
-    console.log(prompt);
+    prompt.log();
 
     const model = new ChatModel(config.content.meta.model);
 

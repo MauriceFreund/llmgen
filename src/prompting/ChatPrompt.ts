@@ -1,4 +1,5 @@
 import { ChatCompletionRequestMessage } from 'openai';
+import { prettyFormat } from '../util/Utility';
 
 class ChatPrompt {
     private _messages: ChatCompletionRequestMessage[];
@@ -25,6 +26,17 @@ class ChatPrompt {
 
     addUserMessage(content: string) {
         this.addMessage({ role: 'user', content });
+    }
+
+    log() {
+        const messageStrings = this._messages.map((msg) => {
+            const msgString = `${msg.role}: ${msg.content ?? ""}`;
+            return msgString
+                .replace(/&quot;/g, '"')
+                .replace(/&#x2F;/g, '/');
+        });
+        const promptString = messageStrings.join('\n\n');
+        console.log(promptString);
     }
 }
 

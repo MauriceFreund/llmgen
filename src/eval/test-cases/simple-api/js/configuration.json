@@ -4,7 +4,7 @@
         "inputPaths": {
             "openApi": "./src/eval/test-cases/simple-api/input/api.json"
         },
-        "outputDir": ".src/eval/test-cases/simple-api/tmp/output/generated/"
+        "outputDir": "./src/eval/test-cases/simple-api/tmp/output/generated/"
     },
     "generator": {
         "targetLanguage": "JavaScript",

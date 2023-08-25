@@ -7,7 +7,8 @@ The user message will contain a "Generator Configuration" section, a "Metadata" 
 will be a Schema from the API spec.
 
 For each schema generate a class. The class should have the same name as the schema and provide the same attributes
-with the correct data type.
+with the correct data type. At the top of the file add a comment with the content "@file <className>" where <className> is
+the name of the generated class.
 
 The "Generator Configuration" gives you information about the expected output. It will specifically include the
 "targetLanguage", which specifies the programming language of the generated code.
