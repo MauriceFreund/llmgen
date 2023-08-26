@@ -11,6 +11,7 @@ import { Example } from './Example';
 import { randomUUID } from 'crypto';
 import { GeneratorMemoryEntry } from '../../memory/GeneratorMemoryEntry';
 import GeneratorConfiguration from '../../input/configuration/GeneratorConfiguration';
+import { withBasePath } from '../../util/Utility';
 
 class ExampleReader {
     private _config: GeneratorConfiguration;
@@ -22,15 +23,15 @@ class ExampleReader {
         switch (config.content.generator.targetLanguage) {
             case 'Java':
                 this._exampleFileExtension = '.java';
-                this._examplePoolPath = path.resolve('src/example/pool/java');
+                this._examplePoolPath = withBasePath('example_pool/java');
                 break;
             case 'Python':
                 this._exampleFileExtension = '.py';
-                this._examplePoolPath = path.resolve('src/example/pool/python');
+                this._examplePoolPath = withBasePath('example_pool/python');
                 break;
             case 'JavaScript':
                 this._exampleFileExtension = '.js';
-                this._examplePoolPath = path.resolve('src/example/pool/js');
+                this._examplePoolPath = withBasePath('example_pool/js');
                 break;
         }
     }

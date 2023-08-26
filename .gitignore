@@ -3,3 +3,4 @@ build/
 .idea/
 resources/
 .env
+.DS_Store

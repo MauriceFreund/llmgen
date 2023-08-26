@@ -1,0 +1,4 @@
+#!/bin/bash
+npm uninstall -g llmgen
+npm run build
+npm link

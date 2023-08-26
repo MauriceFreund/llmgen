@@ -1,12 +1,5 @@
-import { runEvaluation } from './eval/runEvaluation';
+#!/usr/bin/env node
 import { runGenerator } from './runGenerator';
 
-const mode: string = process.argv[2];
-
-if (mode === 'generate') {
-    runGenerator(process.argv[3]).then(() => console.log('Done.'));
-} else if (mode === 'eval') {
-    runEvaluation();
-} else {
-    console.error(`Invalid mode ${mode}. Must be either "generate" or "eval".`);
-}
+const configPath: string = process.argv[2];
+runGenerator(configPath).then(() => console.log('Done.'));
