@@ -7,9 +7,9 @@ test_case=$(basename "$parent_path")
 
 echo "Testing generator for $target_language with $test_case..."
 
-if test -d "./src/main/java/generated/"; then
+if test -d "./src/main/java/llmgeneval/generated/"; then
     echo "Cleaning generated"
-    rm -r ./src/main/java/generated/
+    rm -r ./src/main/java/llmgeneval/generated/
 fi
 
 mkdir ./src/generated/

@@ -3,6 +3,7 @@ FROM ubuntu:latest
 RUN apt-get update \
     && apt-get -y install curl unzip \
     && apt-get -y install python3 python3-pip \
+    && apt-get -y install openjdk-18-jre openjdk-18-jdk \
     && apt-get clean
 
 RUN curl -L https://services.gradle.org/distributions/gradle-7.2-bin.zip -o gradle-7.2-bin.zip \
@@ -19,18 +20,18 @@ RUN apt-get update && apt-get install -y ca-certificates curl gnupg \
 
 RUN pip3 install requests
 
-WORKDIR /usr/pipeline
-
-COPY ./llmgen ./llmgen
-COPY ./llmgen-evaluation ./llmgen-evaluation
-
-WORKDIR /usr/pipeline/llmgen
-
-RUN npm i && npm link
-
 RUN npm i -g @mockoon/cli
 
-WORKDIR /usr/pipeline/llmgen-evaluation
+WORKDIR /usr/pipeline
+
+COPY ./generator ./generator
+COPY ./eval ./eval
+
+WORKDIR /usr/pipeline/generator
+
+RUN npm i && ./relink
+
+WORKDIR /usr/pipeline/eval
 
 ENV OPENAI_API_KEY = key
 

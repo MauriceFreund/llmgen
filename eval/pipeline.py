@@ -5,9 +5,13 @@ from pathlib import Path
 
 
 NUM_TEST_RUNS = 1 if len(sys.argv) <= 1 else int(sys.argv[1])
-OUTPUT_FILE_PATH = "./test-results.json"
+OUTPUT_FILE_PATH = "./results/test-results.json"
 TEST_OUTPUT_MARKER = "#+#"
 TARGET_LANGUAGES = ["js", "py", "java"]
+
+
+def log(msg):
+    print("[eval-pipeline]", msg)
 
 
 def run_test_script(parent_dir):
@@ -19,9 +23,10 @@ def run_test_script(parent_dir):
     )
     try:
         test_output_str = process_output.stdout.split(TEST_OUTPUT_MARKER)[1]
+        print(test_output_str)
         return json.loads(test_output_str)
     except Exception as e:
-        print(e)
+        log(e)
         return {}
 
 
@@ -42,16 +47,16 @@ def read_runtime(test_dir, target_language):
 def run_test(test_dir, test_map):
     test_name = test_dir.name
     test_map[test_name] = {}
-    print(f"Running test '{test_name}'")
+    log(f"Running test '{test_name}'")
 
     for target_language in TARGET_LANGUAGES:
         test_results = []
         target_language_dir = Path(test_dir) / target_language
         if not target_language_dir.exists():
             break
-        print(f"Executing {target_language} tests.")
+        log(f"Executing {target_language} tests.")
         for i in range(1, NUM_TEST_RUNS + 1):
-            print(f"Starting run {i}/{NUM_TEST_RUNS}")
+            log(f"Starting run {i}/{NUM_TEST_RUNS}")
             test_output = run_test_script(target_language_dir.resolve())
             test_output["runtime"] = read_runtime(test_dir, target_language)
             test_results.append(test_output)
@@ -59,7 +64,7 @@ def run_test(test_dir, test_map):
 
 
 if __name__ == "__main__":
-    print("Running test pipeline.")
+    log("Running test pipeline.")
     dir_content = Path("./test-cases/").iterdir()
     test_cases = [path for path in dir_content if path.is_dir()]
     test_map = {}
@@ -67,6 +72,7 @@ if __name__ == "__main__":
         run_test(test, test_map)
 
     resolved_output_path = Path(OUTPUT_FILE_PATH).resolve()
+    resolved_output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(resolved_output_path, 'w', encoding="utf-8") as output_file:
         json.dump(test_map, output_file)
-        print(f"Results written to {resolved_output_path}")
+        log(f"Results written to {resolved_output_path}")

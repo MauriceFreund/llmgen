@@ -1,0 +1,11 @@
+version: '3'
+services:
+  llmgen-eval:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - type: bind
+        source: ./test-results
+        target: /usr/pipeline/eval/results
+
