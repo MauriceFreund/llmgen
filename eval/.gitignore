@@ -1,0 +1,13 @@
+.DS_Store
+generated/
+.env
+test-results.json
+.idea/
+runtime
+
+# java
+build/
+.classpath
+.gitattributes
+.project
+.settings/

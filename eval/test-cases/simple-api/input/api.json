@@ -1,0 +1,162 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Reference API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "localhost:3000/"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "Student": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "lastName",
+                    "firstName"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Exam": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "subject"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "subject": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/students": {
+            "get": {
+                "description": "Get all students",
+                "operationId": "getStudents",
+                "tags": [
+                    "students"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Student"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create new student",
+                "operationId": "postStudent",
+                "tags": [
+                    "students"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Student"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created"
+                    },
+                    "409": {
+                        "description": "Student with id already exists"
+                    }
+                }
+            }
+        },
+        "/students/{studentId}": {
+            "get": {
+                "description": "Get student by id",
+                "operationId": "getStudentById",
+                "tags": [
+                    "students"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Student"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student with provided id does not exist"
+                    }
+                }
+            }
+        },
+        "/exams/{studentId}": {
+            "get": {
+                "description": "Get all all exams a student is currently signed up for",
+                "operationId": "getExamsByStudentId",
+                "tags": [
+                    "exams"
+                ],
+                "parameters": [
+                    {
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true,
+                        "description": "The id of the student",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Exam"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student with provided id does not exist"
+                    }
+                }
+            }
+        }
+    }
+}
