@@ -6,7 +6,7 @@ import Pet from '../model/Pet';
  * @file ListPetsRequest
  */
 class ListPetsRequest {
-    baseUrl = 'petstore.swagger.io/v1';
+    baseUrl = 'http://petstore.swagger.io/v1';
 
     async listPets() {
         const response = await fetch(`${this.baseUrl}/pets`);

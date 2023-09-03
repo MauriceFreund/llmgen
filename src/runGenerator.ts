@@ -20,8 +20,6 @@ async function promptModel<T extends OpenApiSnippet>(
     const promptGenerator = new PromptGenerator(config);
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
 
-    prompt.log();
-
     const model = new ChatModel(config.content.meta.model);
 
     try {
