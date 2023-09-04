@@ -4,3 +4,4 @@ build/
 resources/
 .env
 .DS_Store
+test-results/
