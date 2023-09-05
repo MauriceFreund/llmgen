@@ -1,0 +1,118 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Reference API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "localhost:3000/"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "Document": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "length"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "length": {
+                        "type": "integer"
+                    }
+                }
+            },
+
+            "Letter": {
+                "allOf": [
+                    { "$ref": "#/components/schemas/Document" },
+                    {
+                        "type": "object",
+                        "required": [
+                            "destination"
+                        ],
+                        "properties": {
+                            "destination": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ]
+            },
+
+
+            "Certificate": {
+                "allOf": [
+                    { "$ref": "#/components/schemas/Document" },
+                    {
+                        "type": "object",
+                        "required": [
+                            "destination"
+                        ],
+                        "properties": {
+                            "certificateHolder": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "paths": {
+        "/documents": {
+            "post": {
+                "description": "Save a document",
+                "operationId": "postDocument",
+                "tags": [
+                    "documents"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Document"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created"
+                    },
+                    "409": {
+                        "description": "Document with id already exists"
+                    }
+                }
+            }
+        },
+        "/documents/{documentId}": {
+            "get": {
+                "description": "Get document by id",
+                "operationId": "getDocumentById",
+                "tags": [
+                    "documents"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Document with provided id does not exist"
+                    }
+                }
+            }
+        }
+    }
+} 

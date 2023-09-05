@@ -1,0 +1,13 @@
+{
+    "meta": {
+        "model": "gpt-3.5-turbo",
+        "inputPaths": {
+            "openApi": "../input/api.json"
+        },
+        "outputDir": "./src/generated/"
+    },
+    "generator": {
+        "targetLanguage": "JavaScript",
+        "comments": false
+    }
+}
