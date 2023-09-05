@@ -9,24 +9,32 @@ import GeneratorConfiguration from './input/configuration/GeneratorConfiguration
 import { OpenApiSnippet } from './input/openapi/OpenApiSpecContent';
 import ExampleReader from './example/selection/ExampleReader';
 import OutputWriter from './output/OutputWriter';
-import { prettyFormat } from './util/Utility';
+import { CompletionResult } from './model/CompletionResult';
 
 async function promptModel<T extends OpenApiSnippet>(
     entry: GeneratorMemoryEntry<T>,
     completedEntries: GeneratorMemoryEntry<T>[],
     memory: GeneratorMemory,
     config: GeneratorConfiguration,
-) {
+): Promise<CompletionResult> {
     const promptGenerator = new PromptGenerator(config);
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
 
     const model = new ChatModel(config.content.meta.model);
 
     try {
-        const answer = await model.complete(prompt);
-        memory.completeEntry(entry.id, answer);
+        const completionResult = await model.complete(prompt);
+        memory.completeEntry(entry.id, completionResult.answer);
+        return completionResult;
     } catch (err) {
         console.error(err);
+        return {
+            answer: '',
+            requestInfo: {
+                totalTokens: 0,
+                totalCost: 0,
+            },
+        }
     }
 }
 
@@ -46,13 +54,18 @@ export async function runGenerator(configPath: string) {
 
     console.info(`Initialized memory with ${memory.getIncompleteEntries().length} entries.`);
 
+    var totalCost = 0;
+    var totalTokens = 0;
+
     for (const entry of memory.getIncompleteSchemaEntries()) {
         const schemaExampleEntries = examples
             .filter((ex) => ex.entry.entryType === 'schema')
             .map((ex) => ex.entry);
         const completedEntries = memory.getCompleteSchemaEntries();
         console.info('Prompting model with schema snippet.');
-        await promptModel(entry, [...schemaExampleEntries, ...completedEntries], memory, config);
+        const result = await promptModel(entry, [...schemaExampleEntries, ...completedEntries], memory, config);
+        totalCost += result.requestInfo.totalCost;
+        totalTokens += result.requestInfo.totalTokens;
     }
     for (const entry of memory.getIncompletePathEntries()) {
         const pathExampleEntries = examples
@@ -60,8 +73,12 @@ export async function runGenerator(configPath: string) {
             .map((ex) => ex.entry);
         const completedEntries = memory.getCompletePathEntries();
         console.info('Prompting model with path snippet.');
-        await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
+        const result = await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
+        totalCost += result.requestInfo.totalCost;
+        totalTokens += result.requestInfo.totalTokens;
     }
 
+    console.log(`Cost: ${totalCost}`);
+    console.log(`Token: ${totalTokens}`);
     outputWriter.writeOutput(memory);
 }

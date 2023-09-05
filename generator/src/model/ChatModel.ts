@@ -1,5 +1,7 @@
-import { Configuration, OpenAIApi } from 'openai';
+import { Configuration, CreateChatCompletionResponse, OpenAIApi } from 'openai';
 import ChatPrompt from '../prompting/ChatPrompt';
+import { CompletionRequestInfo, CompletionResult } from './CompletionResult';
+import { calculateRequestCost } from './RequestCostCalculator';
 
 class ChatModel {
     configuration: Configuration;
@@ -14,8 +16,9 @@ class ChatModel {
         this.modelName = modelName;
     }
 
-    async complete(prompt: ChatPrompt): Promise<string> {
+    async complete(prompt: ChatPrompt): Promise<CompletionResult> {
         let answer: string | undefined;
+        let requestInfo: CompletionRequestInfo | undefined;
         try {
             const completionParameters = {
                 model: this.modelName,
@@ -23,6 +26,7 @@ class ChatModel {
                 temperature: 0,
             };
             const completion = await this.openai.createChatCompletion(completionParameters);
+            requestInfo = this.buildRequestInfo(completion.data);
             answer = completion.data.choices[0].message?.content;
         } catch (e) {
             return Promise.reject(e);
@@ -30,7 +34,33 @@ class ChatModel {
         if (answer === undefined) {
             return Promise.reject('Error in ChatModel.complete: Answer from model was undefined.');
         }
-        return Promise.resolve(answer);
+        console.log(`Tokens used in request: `);
+        return Promise.resolve({
+            answer,
+            requestInfo: requestInfo,
+        });
+    }
+
+    private buildRequestInfo(response: CreateChatCompletionResponse): CompletionRequestInfo {
+        const inTokens = response.usage?.prompt_tokens;
+        const outTokens = response.usage?.prompt_tokens;
+
+        if (inTokens === undefined || outTokens === undefined) {
+            return {
+                totalTokens: 0,
+                totalCost: 0,
+            };
+        }
+
+        const cost = calculateRequestCost(
+            this.modelName,
+            inTokens,
+            outTokens,
+        )
+        return {
+            totalTokens: inTokens + outTokens,
+            totalCost: cost,
+        }
     }
 }
 
