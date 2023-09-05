@@ -4,6 +4,7 @@ from generated.api.GetStudentByIdRequest import GetStudentByIdRequest
 from generated.api.GetExamsByStudentIdRequest import GetExamsByStudentIdRequest
 from generated.model.Student import Student
 from generated.model.Exam import Exam
+from generated.api.ApiException import ApiException
 import json
 
 TEST_OUTPUT_MARKER = "#+#"
@@ -42,8 +43,10 @@ def post_invalid_student():
         new_student = Student(1, "Some", "Dude")
         PostStudentRequest().postStudent(new_student)
         fails.append('postInvalidStudent:Post student with existing id should have led to error')
-    except Exception as e:
+    except ApiException:
         successes.append('postInvalidStudent')
+    except Exception as e:
+        fails.append(f'postInvalidStudent:{e}')
 
 
 def get_existing_student():
@@ -62,8 +65,10 @@ def get_non_existing_student():
     try:
         GetStudentByIdRequest().getStudentById(44)
         fails.append('getNonExistingStudent:Requesting student with not existing id should have led to error')
-    except Exception as e:
+    except ApiException:
         successes.append('getNonExistingStudent')
+    except Exception as e:
+        fails.append(f'getNonExistingStudent:{e}')
 
 
 def get_exams_of_existing_student():
@@ -86,8 +91,10 @@ def get_exams_of_non_existing_student():
     try:
         GetStudentByIdRequest().getStudentById(44)
         fails.append('getExamsOfNonExistingStudent:Requesting student with not existing id should have led to error')
-    except Exception as e:
+    except ApiException:
         successes.append('getExamsOfNonExistingStudent')
+    except Exception as e:
+        fails.append(f"getExamsOfNonExistingStudent:{e}")
 
 
 # Execute the functions

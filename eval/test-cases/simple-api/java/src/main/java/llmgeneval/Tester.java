@@ -7,6 +7,7 @@ import llmgeneval.generated.api.GetStudentByIdRequest;
 import llmgeneval.generated.api.GetExamsByStudentIdRequest;
 import llmgeneval.generated.model.Student;
 import llmgeneval.generated.model.Exam;
+import llmgeneval.generated.exception.ApiException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +63,7 @@ public class Tester {
             successes.add("postValidStudent");
         } catch (Exception e) {
             fails.add("postValidStudent:" + e.getMessage());
-        }
+        } 
     }
 
     public static void postInvalidStudent() {
@@ -70,9 +71,12 @@ public class Tester {
             Student newStudent = new Student(1, "Some", "Dude");
             new PostStudentRequest().postStudent(newStudent);
             fails.add("postInvalidStudent:Post student with existing id should have led to error");
-        } catch (Exception e) {
+        } catch (ApiException e) {
             successes.add("postInvalidStudent");
+        } catch (Exception e) {
+            fails.add("postInvalidStudent:" + e.getMessage());
         }
+
     }
 
     public static void getExistingStudent() {
@@ -93,9 +97,12 @@ public class Tester {
         try {
             new GetStudentByIdRequest().getStudentById("44");
             fails.add("getNonExistingStudent:Requesting student with non-existing id should have led to error");
-        } catch (Exception e) {
+        } catch (ApiException e) {
             successes.add("getNonExistingStudent");
+        } catch (Exception e) {
+            fails.add("getNonExistingStudent" + e.getMessage());
         }
+
     }
 
     public static void getExamsOfExistingStudent() {
@@ -117,9 +124,12 @@ public class Tester {
         try {
             new GetStudentByIdRequest().getStudentById("44");
             fails.add("getExamsOfNonExistingStudent:Requesting student with non-existing id should have led to error");
-        } catch (Exception e) {
+        } catch (ApiException e) {
             successes.add("getExamsOfNonExistingStudent");
+        } catch (Exception e) {
+            fails.add("getExamsOfNonExistingStudent" + e.getMessage());
         }
+
     }
 }
 

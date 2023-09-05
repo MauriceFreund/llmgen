@@ -4,6 +4,7 @@ import GetStudentByIdRequest from './generated/api/GetStudentByIdRequest.js';
 import GetExamsByStudentIdRequest from './generated/api/GetExamsByStudentIdRequest.js';
 import Student from './generated/model/Student.js';
 import Exam from './generated/model/Exam.js';
+import ApiException from './generated/exception/ApiException.js';
 
 const TEST_OUTPUT_MARKER="#+#"
 
@@ -26,6 +27,7 @@ async function getAllStudents() {
             successes.push('getAllStudents');
         }
     } catch (e) {
+
         fails.push(`getAllStudents:${e}`);
     }
 }
@@ -46,7 +48,11 @@ async function postInvalidStudent() {
         await new PostStudentRequest().postStudent(newStudent);
         fails.push(`postInvalidStudent:Post student with existing id should have let to error`);
     } catch (e) {
-        successes.push('postInvalidStudent');
+        if (e instanceof ApiException) {
+            successes.push('postInvalidStudent');
+        } else {
+            fails.push(`postInvalidStudent:Expected exception to be instance of ApiException but got ${e.constructor.name}`);
+        }
     }
 }
 
@@ -75,7 +81,11 @@ async function getNonExistingStudent() {
         await new GetStudentByIdRequest().getStudentById(44);
         fails.push('getNonExistingStudent:Requesting student with not existing id should have let to error');
     } catch (e) {
-        successes.push('getNonExistingStudent');
+        if (e instanceof ApiException) {
+            successes.push('getNonExistingStudent');
+        } else {
+            fails.push(`getNonExistingStudent:Expected exception to be instance of ApiException but got ${e.constructor.name}`);
+        }
     }
 }
 
@@ -104,7 +114,11 @@ async function getExamsOfNonExistingStudent() {
         await new GetStudentByIdRequest().getStudentById(44);
         fails.push('getExamsOfNonExistingStudent:Requesting student with not existing id should have let to error');
     } catch (e) {
-        successes.push('getExamsOfNonExistingStudent');
+        if (e instanceof ApiException) {
+            successes.push('getExamsOfNonExistingStudent');
+        } else {
+            fails.push(`getExamsOfNonExistingStudent:Expected exception to be instance of ApiException but got ${e.constructor.name}`);
+        }
     }
 }
 
