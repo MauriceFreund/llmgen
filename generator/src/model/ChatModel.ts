@@ -34,7 +34,6 @@ class ChatModel {
         if (answer === undefined) {
             return Promise.reject('Error in ChatModel.complete: Answer from model was undefined.');
         }
-        console.log(`Tokens used in request: `);
         return Promise.resolve({
             answer,
             requestInfo: requestInfo,
