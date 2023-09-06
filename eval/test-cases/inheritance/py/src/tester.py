@@ -1,11 +1,6 @@
-from generated.api.GetStudentsRequest import GetStudentsRequest
-from generated.api.PostStudentRequest import PostStudentRequest
-from generated.api.GetStudentByIdRequest import GetStudentByIdRequest
-from generated.api.GetExamsByStudentIdRequest import GetExamsByStudentIdRequest
-from generated.model.Student import Student
-from generated.model.Exam import Exam
-from generated.api.ApiException import ApiException
-import json
+from generated.api import GetDocumentByIdRequest, PostDocumentRequest
+from generated.model import Document, Letter, Certificate
+from generated.exception import ApiException
 
 TEST_OUTPUT_MARKER = "#+#"
 
@@ -13,98 +8,82 @@ successes = []
 fails = []
 
 
-def get_all_students():
+def get_letter_by_id():
     try:
-        students = GetStudentsRequest().getStudents()
-        expected_students = [
-            Student(1, "John", "Doe"),
-            Student(2, "Jane", "Doe")
-        ]
-        if students != expected_students:
-            print(f"getAllStudents failed: {students} did not match expected {expected_students}")
-            fails.append('getAllStudents:Received students that did not match expected values')
+        letter = GetDocumentByIdRequest.get_document_by_id(1)
+        if (
+            letter.id == 1
+            and letter.destination == "Germany"
+            and letter.document_type == "LETTER"
+        ):
+            successes.append("getLetterById")
         else:
-            successes.append('getAllStudents')
+            fails.append("getLetterById:Received letter did not match expected values")
     except Exception as e:
-        fails.append(f"getAllStudents:{e}")
+        fails.append(f"getLetterById:{e}")
 
 
-def post_valid_student():
+def get_certificate_by_id():
     try:
-        new_student = Student(3, "Some", "Dude")
-        PostStudentRequest().postStudent(new_student)
-        successes.append('postValidStudent')
-    except Exception as e:
-        fails.append(f"postValidStudent:{e}")
-
-
-def post_invalid_student():
-    try:
-        new_student = Student(1, "Some", "Dude")
-        PostStudentRequest().postStudent(new_student)
-        fails.append('postInvalidStudent:Post student with existing id should have led to error')
-    except ApiException:
-        successes.append('postInvalidStudent')
-    except Exception as e:
-        fails.append(f'postInvalidStudent:{e}')
-
-
-def get_existing_student():
-    try:
-        student = GetStudentByIdRequest().getStudentById(1)
-        if student.id == 1 and student.first_name == 'Rainer' and student.last_name == 'Zufall':
-            successes.append('getExistingStudent')
+        certificate = GetDocumentByIdRequest.get_document_by_id(2)
+        if (
+            certificate.id == 2
+            and certificate.certificate_holder == "Maria Mustermann"
+            and certificate.document_type == "CERTIFICATE"
+        ):
+            successes.append("getCertificateById")
         else:
-            print(f"getExistingStudent failed: {student} did not match expected values")
-            fails.append('getExistingStudent:Received student did not match expected values')
+            fails.append("getCertificateById:Received certificate did not match expected values")
     except Exception as e:
-        fails.append(f"getExistingStudent:{e}")
+        fails.append(f"getCertificateById:{e}")
 
 
-def get_non_existing_student():
+def get_document_by_unknown_id():
     try:
-        GetStudentByIdRequest().getStudentById(44)
-        fails.append('getNonExistingStudent:Requesting student with not existing id should have led to error')
+        GetDocumentByIdRequest.get_document_by_id(3)
+        fails.append("getDocumentByUnknownId:Request should have led to error but did not.")
     except ApiException:
-        successes.append('getNonExistingStudent')
+        successes.append("getDocumentByUnknownId")
     except Exception as e:
-        fails.append(f'getNonExistingStudent:{e}')
+        fails.append(f"getDocumentByUnknownId:{e}")
 
 
-def get_exams_of_existing_student():
+def save_letter():
     try:
-        exams = GetExamsByStudentIdRequest().getExamsByStudentId(1)
-        expected_exams = [
-            Exam(1, 'English'),
-            Exam(2, 'Math')
-        ]
-        if exams == expected_exams:
-            successes.append('getExamsOfExistingStudent')
-        else:
-            print(f"getExamsOfExistingStudent failed: {exams} did not match expected {expected_exams}")
-            fails.append('getExamsOfExistingStudent:Received exams did not match expected data')
+        letter = Letter(3, "Mars", "LETTER")
+        PostDocumentRequest.post_document(letter)
+        successes.append("saveLetter")
     except Exception as e:
-        fails.append(f"getExamsOfExistingStudent:{e}")
+        fails.append(f"saveLetter:{e}")
 
 
-def get_exams_of_non_existing_student():
+def save_certificate():
     try:
-        GetStudentByIdRequest().getStudentById(44)
-        fails.append('getExamsOfNonExistingStudent:Requesting student with not existing id should have led to error')
+        certificate = Certificate(4, "Rainer Zufall", "CERTIFICATE")
+        PostDocumentRequest.post_document(certificate)
+        successes.append("saveCertificate")
+    except Exception as e:
+        fails.append(f"saveCertificate:{e}")
+
+
+def post_document_with_conflicting_id():
+    try:
+        document = Document(1)
+        PostDocumentRequest.post_document(document)
+        fails.append("postDocumentWithConflictingId:Request should have led to error but did not.")
     except ApiException:
-        successes.append('getExamsOfNonExistingStudent')
+        successes.append("postDocumentWithConflictingId")
     except Exception as e:
-        fails.append(f"getExamsOfNonExistingStudent:{e}")
+        fails.append(f"postDocumentWithConflictingId:{e}")
 
 
-# Execute the functions
-get_all_students()
-post_valid_student()
-post_invalid_student()
-get_existing_student()
-get_non_existing_student()
-get_exams_of_existing_student()
-get_exams_of_non_existing_student()
+# Run the tests
+get_letter_by_id()
+get_certificate_by_id()
+get_document_by_unknown_id()
+save_letter()
+save_certificate()
+post_document_with_conflicting_id()
 
 num_successes = len(successes)
 num_tests = num_successes + len(fails)
@@ -119,5 +98,5 @@ result = {
 }
 
 print(TEST_OUTPUT_MARKER)
-print(json.dumps(result))
+print(result)
 print(TEST_OUTPUT_MARKER)

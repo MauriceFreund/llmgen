@@ -1,0 +1,217 @@
+{
+  "uuid": "c1301a9c-455a-4e61-8838-32919e611d84",
+  "lastMigration": 28,
+  "name": "Reference API",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "7e2722fd-ad99-444b-ad9c-63855039b29f",
+      "type": "http",
+      "documentation": "Save a document",
+      "method": "post",
+      "endpoint": "documents",
+      "responses": [
+        {
+          "uuid": "ef5d9e29-8301-4f13-894e-d7e129f5971d",
+          "body": "",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "Successfully created",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "b5e507d1-56ac-4584-bae5-147028a66073",
+          "body": "",
+          "latency": 0,
+          "statusCode": 409,
+          "label": "Document with id already exists",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "id",
+              "value": "1",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "id",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "0184cf80-64bd-4147-adb9-04fab4ec45a2",
+      "type": "http",
+      "documentation": "Get document by id",
+      "method": "get",
+      "endpoint": "documents/:documentId",
+      "responses": [
+        {
+          "uuid": "162a6b35-ce5a-42dd-8025-a1a483a6d2dd",
+          "body": "{\n  \"id\": 1,\n  \"destination\": \"Germany\",\n  \"documentType\": \"LETTER\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Return Letter",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "documentId",
+              "value": "1",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "66797ea2-a8ac-413c-b54c-c0f81f56df2b",
+          "body": "{\n  \"id\": 2,\n  \"certificateHolder\": \"Maria Mustermann\",\n  \"documentType\": \"CERTIFICATE\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Return Certificate",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "documentId",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "a752d276-dac0-40a4-93ca-98ec81165250",
+          "body": "",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Document with provided id does not exist",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "7e2722fd-ad99-444b-ad9c-63855039b29f"
+    },
+    {
+      "type": "route",
+      "uuid": "0184cf80-64bd-4147-adb9-04fab4ec45a2"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": []
+}

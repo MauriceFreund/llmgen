@@ -1,9 +1,8 @@
-import GetStudentsRequest from './generated/api/GetStudentsRequest.js';
-import PostStudentRequest from './generated/api/PostStudentRequest.js';
-import GetStudentByIdRequest from './generated/api/GetStudentByIdRequest.js';
-import GetExamsByStudentIdRequest from './generated/api/GetExamsByStudentIdRequest.js';
-import Student from './generated/model/Student.js';
-import Exam from './generated/model/Exam.js';
+import GetDocumentByIdRequest from './generated/api/GetDocumentByIdRequest.js';
+import PostDocumentRequest from './generated/api/PostDocumentRequest.js';
+import Document from './generated/model/Document.js';
+import Letter from './generated/model/Letter.js';
+import Certificate from './generated/model/Certificate.js';
 import ApiException from './generated/exception/ApiException.js';
 
 const TEST_OUTPUT_MARKER="#+#"
@@ -11,125 +10,93 @@ const TEST_OUTPUT_MARKER="#+#"
 let successes = [];
 let fails = [];
 
-async function getAllStudents() {
+async function getLetterById() {
     try {
-        const students = await new GetStudentsRequest().getStudents();
-        const expectedStudents = [
-            new Student(1, "John", "Doe"),
-            new Student(2, "Jane", "Doe"),
-        ]
-        if (JSON.stringify(students) !== JSON.stringify(expectedStudents)) {
-            console.log(
-                `getAllStudents failed: ${JSON.stringify(students)} did not match expected ${JSON.stringify(expectedStudents)}`
-            );
-            fails.push('getAllStudents:Received students that did not match expected values');
-        } else {
-            successes.push('getAllStudents');
-        }
-    } catch (e) {
-
-        fails.push(`getAllStudents:${e}`);
-    }
-}
-
-async function postValidStudent() {
-    try {
-        const newStudent = new Student(3, "Some", "Dude");
-        await new PostStudentRequest().postStudent(newStudent);
-        successes.push('postValidStudent');
-    } catch (e) {
-        fails.push(`postValidStudent:${e}`);
-    }
-}
-
-async function postInvalidStudent() {
-    try {
-        const newStudent = new Student(1, "Some", "Dude");
-        await new PostStudentRequest().postStudent(newStudent);
-        fails.push(`postInvalidStudent:Post student with existing id should have let to error`);
-    } catch (e) {
-        if (e instanceof ApiException) {
-            successes.push('postInvalidStudent');
-        } else {
-            fails.push(`postInvalidStudent:Expected exception to be instance of ApiException but got ${e.constructor.name}`);
-        }
-    }
-}
-
-async function getExistingStudent() {
-    try {
-        const student = await new GetStudentByIdRequest().getStudentById(1);
+        const letter = await GetDocumentByIdRequest.getDocumentById(1);
         if (
-            student.id === 1
-            && student.firstName === 'Rainer'
-            && student.lastName === 'Zufall'
+            letter.id === 1
+            && letter.destination === "Germany"
+            && letter.documentType === "LETTER"
         ) {
-            successes.push('getExistingStudent');
+            successes.push("getLetterById");
         } else {
-            console.log(
-                `getExistingStudent failed: ${JSON.stringify(student)} did not match expected values`
-            );
-            fails.push('getExistingStudent:Received student did not match expected values');
+            fails.push("getLetterById:Received letter did not match expected values");
         }
     } catch (e) {
-        fails.push(`getExistingStudent:${e}`);
+        fails.push("getLetterById:" + e);
     }
 }
 
-async function getNonExistingStudent() {
+async function getCertificateById() {
     try {
-        await new GetStudentByIdRequest().getStudentById(44);
-        fails.push('getNonExistingStudent:Requesting student with not existing id should have let to error');
+        const certificate = await GetDocumentByIdRequest.getDocumentById(2);
+        if (
+            certificate.id === 2
+            && certificate.certificateHolder === "Maria Mustermann"
+            && certificate.documentType === "CERTIFICATE"
+        ) {
+            successes.push("getCertificateById");
+        } else {
+            fails.push("getCertificateById:Received certificate did not match expected values");
+        }
+    } catch (e) {
+        fails.push("getCertificateById:" + e);
+    }
+}
+
+async function getDocumentByUnknownId() {
+    try {
+        await GetDocumentByIdRequest.getDocumentById(3);
+        fails.push("getDocumentByUnknownId:Request should have led to error but did not.");
     } catch (e) {
         if (e instanceof ApiException) {
-            successes.push('getNonExistingStudent');
+            successes.push("getDocumentByUnknownId");
         } else {
-            fails.push(`getNonExistingStudent:Expected exception to be instance of ApiException but got ${e.constructor.name}`);
+            fails.push("getDocumentByUnknownId:" + e);
         }
     }
 }
 
-async function getExamsOfExistingStudent() {
+async function saveLetter() {
     try {
-        const exams = await new GetExamsByStudentIdRequest().getExamsByStudentId(1);
-        const expectedExams = [
-            new Exam(1, 'English'),
-            new Exam(2, 'Math'),
-        ];
-        if (JSON.stringify(exams) === JSON.stringify(expectedExams)) {
-            successes.push('getExamsOfExistingStudent');
-        } else {
-            console.log(
-                `getExamsOfExistingStudent failed: ${JSON.stringify(exams)} did not match expected ${JSON.stringify(expectedExams)}`
-            );
-            fails.push('getExamsOfExistingStudent:Received exams did not match expected data');
-        }
+        const letter = new Letter(3, "Mars", "LETTER");
+        await PostDocumentRequest.postDocument(letter);
+        successes.push("saveLetter");
     } catch (e) {
-        fails.push(`getExamsOfExistingStudent:${e}`);
+        fails.push("saveLetter:" + e);
     }
 }
 
-async function getExamsOfNonExistingStudent() {
+async function saveCertificate() {
     try {
-        await new GetStudentByIdRequest().getStudentById(44);
-        fails.push('getExamsOfNonExistingStudent:Requesting student with not existing id should have let to error');
+        const certificate = new Certificate(4, "Rainer Zufall", "CERTIFICATE");
+        await PostDocumentRequest.postDocument(certificate);
+        successes.push("saveCertificate");
+    } catch (e) {
+        fails.push("saveCertificate:" + e);
+    }
+}
+
+async function postDocumentWithConflictingId() {
+    try {
+        const document = new Document(1);
+        await PostDocumentRequest.postDocument(document);
+        fails.push("postDocumentWithConflictingId:Request should have led to error but did not.");
     } catch (e) {
         if (e instanceof ApiException) {
-            successes.push('getExamsOfNonExistingStudent');
+            successes.push("postDocumentWithConflictingId");
         } else {
-            fails.push(`getExamsOfNonExistingStudent:Expected exception to be instance of ApiException but got ${e.constructor.name}`);
+            fails.push("postDocumentWithConflictingId:" + e);
         }
     }
 }
 
-
-await getAllStudents();
-await postValidStudent();
-await postInvalidStudent();
-await getExistingStudent();
-await getNonExistingStudent();
-await getExamsOfExistingStudent();
-await getExamsOfNonExistingStudent();
+await getLetterById();
+await getCertificateById();
+await getDocumentByUnknownId();
+await saveLetter();
+await saveCertificate();
+await postDocumentWithConflictingId();
 
 const numSuccesses = successes.length;
 const numTests = numSuccesses + fails.length;

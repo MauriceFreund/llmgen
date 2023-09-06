@@ -6,25 +6,33 @@
     },
     "servers": [
         {
-            "url": "localhost:3000/"
+            "url": "http://localhost:3000"
         }
     ],
     "components": {
         "schemas": {
             "Document": {
                 "type": "object",
+
                 "required": [
-                    "id",
-                    "length"
+                    "id"
                 ],
                 "properties": {
                     "id": {
                         "type": "integer"
-                    },
-                    "length": {
-                        "type": "integer"
                     }
-                }
+                },
+                 "oneOf": [
+                     {
+                         "$ref": "#/components/schemas/Letter"
+                     },
+                     {
+                         "$ref": "#/components/schemas/Certificate"
+                     }
+                 ],
+                 "discriminator": {
+                     "propertyName": "documentType"
+                 }
             },
 
             "Letter": {
@@ -33,11 +41,16 @@
                     {
                         "type": "object",
                         "required": [
-                            "destination"
+                            "destination",
+                            "documentType"
                         ],
                         "properties": {
                             "destination": {
                                 "type": "string"
+                            },
+                            "documentType": {
+                                "type": "string",
+                                "enum": ["LETTER"]
                             }
                         }
                     }
@@ -51,11 +64,16 @@
                     {
                         "type": "object",
                         "required": [
-                            "destination"
+                            "destination",
+                            "documentType"
                         ],
                         "properties": {
                             "certificateHolder": {
                                 "type": "string"
+                            },
+                            "documentType": {
+                                "type": "string",
+                                "enum": ["CERTIFICATE"]
                             }
                         }
                     }

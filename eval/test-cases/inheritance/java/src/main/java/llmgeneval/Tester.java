@@ -1,15 +1,13 @@
 package llmgeneval;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import llmgeneval.generated.api.GetStudentsRequest;
-import llmgeneval.generated.api.PostStudentRequest;
-import llmgeneval.generated.api.GetStudentByIdRequest;
-import llmgeneval.generated.api.GetExamsByStudentIdRequest;
-import llmgeneval.generated.model.Student;
-import llmgeneval.generated.model.Exam;
-import llmgeneval.generated.exception.ApiException;
+import generated.api.GetDocumentByIdRequest;
+import generated.api.PostDocumentRequest;
+import generated.model.Document;
+import generated.model.Letter;
+import generated.model.Certificate;
+import generated.exception.ApiException;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Tester {
@@ -18,118 +16,99 @@ public class Tester {
     private static List<String> fails = new ArrayList<>();
 
     public static void main(String[] args) {
-        getAllStudents();
-        postValidStudent();
-        postInvalidStudent();
-        getExistingStudent();
-        getNonExistingStudent();
-        getExamsOfExistingStudent();
-        getExamsOfNonExistingStudent();
+        getLetterById();
+        getCertificateById();
+        getDocumentByUnknownId();
+        saveLetter();
+        saveCertificate();
+        postDocumentWithConflictingId();
 
         int numSuccesses = successes.size();
         int numTests = numSuccesses + fails.size();
         double successRate = (double) numSuccesses / numTests;
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String result = objectMapper.writeValueAsString(new TestResult(successes, fails, numSuccesses, numTests, successRate));
-            System.out.println(TEST_OUTPUT_MARKER);
-            System.out.println(result);
-            System.out.println(TEST_OUTPUT_MARKER);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        TestResult result = new TestResult(successes, fails, numSuccesses, numTests, successRate);
+
+        System.out.println(TEST_OUTPUT_MARKER);
+        System.out.println(result);
+        System.out.println(TEST_OUTPUT_MARKER);
     }
 
-    public static void getAllStudents() {
+    public static void getLetterById() {
         try {
-            List<Student> students = new GetStudentsRequest().getStudents();
-            List<Student> expectedStudents = Arrays.asList(new Student(1, "John", "Doe"), new Student(2, "Jane", "Doe"));
-            if (!students.equals(expectedStudents)) {
-                System.out.println("getAllStudents failed: " + students + " did not match expected " + expectedStudents);
-                fails.add("getAllStudents:Received students that did not match expected values");
+            Letter letter = GetDocumentByIdRequest.getDocumentById(1);
+            if (
+                    letter.getId() == 1 
+                    && "Germany".equals(letter.getDestination()) 
+                    && "LETTER".equals(letter.getDocumentType())
+            ) {
+                successes.add("getLetterById");
             } else {
-                successes.add("getAllStudents");
+                fails.add("getLetterById:Received letter did not match expected values");
             }
         } catch (Exception e) {
-            fails.add("getAllStudents:" + e.getMessage());
+            fails.add("getLetterById:" + e.getMessage());
         }
     }
 
-    public static void postValidStudent() {
+    public static void getCertificateById() {
         try {
-            Student newStudent = new Student(3, "Some", "Dude");
-            new PostStudentRequest().postStudent(newStudent);
-            successes.add("postValidStudent");
-        } catch (Exception e) {
-            fails.add("postValidStudent:" + e.getMessage());
-        } 
-    }
-
-    public static void postInvalidStudent() {
-        try {
-            Student newStudent = new Student(1, "Some", "Dude");
-            new PostStudentRequest().postStudent(newStudent);
-            fails.add("postInvalidStudent:Post student with existing id should have led to error");
-        } catch (ApiException e) {
-            successes.add("postInvalidStudent");
-        } catch (Exception e) {
-            fails.add("postInvalidStudent:" + e.getMessage());
-        }
-
-    }
-
-    public static void getExistingStudent() {
-        try {
-            Student student = new GetStudentByIdRequest().getStudentById("1");
-            if (student.getId() == 1 && "Rainer".equals(student.getFirstName()) && "Zufall".equals(student.getLastName())) {
-                successes.add("getExistingStudent");
+            Certificate certificate = GetDocumentByIdRequest.getDocumentById(2);
+            if (
+                    certificate.getId() == 2 
+                    && "Maria Mustermann".equals(certificate.getCertificateHolder()) 
+                    && "CERTIFICATE".equals(certificate.getDocumentType())
+            ) {
+                successes.add("getCertificateById");
             } else {
-                System.out.println("getExistingStudent failed: " + student + " did not match expected values");
-                fails.add("getExistingStudent:Received student did not match expected values");
+                fails.add("getCertificateById:Received certificate did not match expected values");
             }
         } catch (Exception e) {
-            fails.add("getExistingStudent:" + e.getMessage());
+            fails.add("getCertificateById:" + e.getMessage());
         }
     }
 
-    public static void getNonExistingStudent() {
+    public static void getDocumentByUnknownId() {
         try {
-            new GetStudentByIdRequest().getStudentById("44");
-            fails.add("getNonExistingStudent:Requesting student with non-existing id should have led to error");
+            GetDocumentByIdRequest.getDocumentById(3);
+            fails.add("getDocumentByUnknownId:Request should have led to error but did not.");
         } catch (ApiException e) {
-            successes.add("getNonExistingStudent");
+            successes.add("getDocumentByUnknownId");
         } catch (Exception e) {
-            fails.add("getNonExistingStudent" + e.getMessage());
-        }
-
-    }
-
-    public static void getExamsOfExistingStudent() {
-        try {
-            List<Exam> exams = new GetExamsByStudentIdRequest().getExamsByStudentId("1");
-            List<Exam> expectedExams = Arrays.asList(new Exam(1, "English"), new Exam(2, "Math"));
-            if (exams.equals(expectedExams)) {
-                successes.add("getExamsOfExistingStudent");
-            } else {
-                System.out.println("getExamsOfExistingStudent failed: " + exams + " did not match expected " + expectedExams);
-                fails.add("getExamsOfExistingStudent:Received exams did not match expected data");
-            }
-        } catch (Exception e) {
-            fails.add("getExamsOfExistingStudent:" + e.getMessage());
+            fails.add("getDocumentByUnknownId:" + e.getMessage());
         }
     }
 
-    public static void getExamsOfNonExistingStudent() {
+    public static void saveLetter() {
         try {
-            new GetStudentByIdRequest().getStudentById("44");
-            fails.add("getExamsOfNonExistingStudent:Requesting student with non-existing id should have led to error");
+            Letter letter = new Letter(3, "Mars", "LETTER");
+            PostDocumentRequest.postDocument(letter);
+            successes.add("saveLetter");
+        } catch (Exception e) {
+            fails.add("saveLetter:" + e.getMessage());
+        }
+    }
+
+    public static void saveCertificate() {
+        try {
+            Certificate certificate = new Certificate(4, "Rainer Zufall", "CERTIFICATE");
+            PostDocumentRequest.postDocument(certificate);
+            successes.add("saveCertificate");
+        } catch (Exception e) {
+            fails.add("saveCertificate:" + e.getMessage());
+        }
+    }
+
+    public static void postDocumentWithConflictingId() {
+        try {
+            Document document = new Document(1);
+            PostDocumentRequest.postDocument(document);
+            fails.add("postDocumentWithConflictingId:Request should have led to error but did not.");
         } catch (ApiException e) {
-            successes.add("getExamsOfNonExistingStudent");
+            successes.add("postDocumentWithConflictingId");
         } catch (Exception e) {
-            fails.add("getExamsOfNonExistingStudent" + e.getMessage());
+            fails.add("postDocumentWithConflictingId:" + e.getMessage());
         }
-
     }
 }
 
