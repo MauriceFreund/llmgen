@@ -13,6 +13,6 @@ class ListPetsRequest:
 
     baseUrl = 'petstore.swagger.io/v1'
 
-    def listPets(self) -> List[Pet]:
+    def list_pet(self) -> List[Pet]:
         response = requests.get(f'{self.baseUrl}/pets')
         return [Pet(**pet) for pet in response.json()]
