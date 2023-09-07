@@ -37,26 +37,31 @@ class ExampleReader {
     }
 
     readExamples(): Example<OpenApiSnippet>[] {
-        const examples = [...this.readSchemas(), ...this.readPaths()].filter((example) =>
-            this.exampleConfigMatchesGlobalConfig(example.config),
-        );
-        console.info(`Found ${examples.length} examples with matching configuration.`);
-        return examples;
+        const examples = [...this.readSchemas(), ...this.readPaths()]        
+        const maxMatchScore = Math.max(...examples.map((ex) => this.exampleMatchScore(ex.config)));
+
+        if (maxMatchScore === 0) return [];
+
+        const bestMatches = examples.filter((ex) => this.exampleMatchScore(ex.config) === maxMatchScore);
+
+        console.info(`Found ${bestMatches.length} examples with matching configuration score of ${maxMatchScore}.`);
+
+        return bestMatches;
     }
 
-    private exampleConfigMatchesGlobalConfig(exampleConfig: TargetConfiguration): boolean {
+    private exampleMatchScore(exampleConfig: TargetConfiguration): number {
+        if (exampleConfig.targetLanguage !== this._config.content.generator.targetLanguage) {
+            return 0;
+        }
+
         const exampleKeys = Object.keys(exampleConfig) as (keyof TargetConfiguration)[];
         const configKeys = Object.keys(
             this._config.content.generator,
         ) as (keyof TargetConfiguration)[];
 
-        if (exampleKeys.length !== configKeys.length) {
-            return false;
-        }
-
-        return exampleKeys.every(
-            (key) => exampleConfig[key] === this._config.content.generator[key],
-        );
+        return exampleKeys.filter(
+            (key) => configKeys.includes(key) && exampleConfig[key] === this._config.content.generator[key],
+        ).length;
     }
 
     readSchemas(): Example<SchemaSnippet>[] {

@@ -12,6 +12,7 @@ export interface MetaConfiguration {
 export interface TargetConfiguration {
     targetLanguage: 'Python' | 'JavaScript' | 'Java';
     comments: boolean;
+    javaPackagePrefix?: string
 }
 
 export interface MetaConfigurationInputPaths {

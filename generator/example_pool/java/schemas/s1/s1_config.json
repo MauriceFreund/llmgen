@@ -1,4 +1,5 @@
 {
     "targetLanguage": "Java",
-    "comments": false
+    "comments": false,
+    "javaPackagePrefix": "dx.example"
 }

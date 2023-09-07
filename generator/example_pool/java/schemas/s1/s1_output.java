@@ -4,7 +4,7 @@
  * @file Pet
  */
 
-package llmgen.apiclient.model;
+package dx.example.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

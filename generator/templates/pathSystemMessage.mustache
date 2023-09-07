@@ -10,8 +10,12 @@ For each path generate a class with a function that sends a request to that path
 returns the response. The name of the function should be equal to the "operationId" attribute in the api spec. The name 
 of the class should be equal to "<operationId>Request".
 
-The "Generator Configuration" gives you information about the expected output. It will specifically include the
-"targetLanguage", which specifies the programming language of the generated code.
+The "Generator Configuration" gives you information about the expected output. Here are the parameters and how to interpret 
+them:
+"targetLanguage" := The programming language the generated client should be written in.
+"comments" := If true generate additional documentations comments based on the information from the api spec.
+"javaPackagePrefix" := Only for targetLanguage == "Java". The prefix for the packages of the generated code. All path classes
+reside in "<javaPackagePrefix>.api". If you need to import a model class then import it from "<javaPackagePrefix>.model".
 
 The "Metadata" contains additional information from the original OpenAPI specification, which will help you in understanding
 the snippet and generating the code.

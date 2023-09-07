@@ -4,11 +4,11 @@
  * @file ListPetsRequest
  */
 
-package llmgen.apiclient.api;
+package dx.example.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import llmgen.apiclient.api.model.Pet;
+import dx.example.model.Pet;
 
 import java.io.IOException;
 import java.net.URI;
