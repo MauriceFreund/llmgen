@@ -6,7 +6,8 @@ This file was auto generated. Do not modify its content.
 import requests
 from typing import List
 
-from apiclient.model.pet import Pet
+from ..model.Pet import Pet
+
 
 class ListPetsRequest:
 
