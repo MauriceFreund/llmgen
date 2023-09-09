@@ -4,7 +4,7 @@ from generated.api.GetStudentByIdRequest import GetStudentByIdRequest
 from generated.api.GetExamsByStudentIdRequest import GetExamsByStudentIdRequest
 from generated.model.Student import Student
 from generated.model.Exam import Exam
-from generated.api.ApiException import ApiException
+from generated.exception.ApiException import ApiException
 import json
 
 TEST_OUTPUT_MARKER = "#+#"
@@ -15,13 +15,12 @@ fails = []
 
 def get_all_students():
     try:
-        students = GetStudentsRequest().getStudents()
+        students = GetStudentsRequest().get_students()
         expected_students = [
             Student(1, "John", "Doe"),
             Student(2, "Jane", "Doe")
         ]
         if students != expected_students:
-            print(f"getAllStudents failed: {students} did not match expected {expected_students}")
             fails.append('getAllStudents:Received students that did not match expected values')
         else:
             successes.append('getAllStudents')
@@ -32,7 +31,7 @@ def get_all_students():
 def post_valid_student():
     try:
         new_student = Student(3, "Some", "Dude")
-        PostStudentRequest().postStudent(new_student)
+        PostStudentRequest().post_student(new_student)
         successes.append('postValidStudent')
     except Exception as e:
         fails.append(f"postValidStudent:{e}")
@@ -41,7 +40,7 @@ def post_valid_student():
 def post_invalid_student():
     try:
         new_student = Student(1, "Some", "Dude")
-        PostStudentRequest().postStudent(new_student)
+        PostStudentRequest().post_student(new_student)
         fails.append('postInvalidStudent:Post student with existing id should have led to error')
     except ApiException:
         successes.append('postInvalidStudent')
@@ -51,7 +50,7 @@ def post_invalid_student():
 
 def get_existing_student():
     try:
-        student = GetStudentByIdRequest().getStudentById(1)
+        student = GetStudentByIdRequest().get_student_by_id(1)
         if student.id == 1 and student.first_name == 'Rainer' and student.last_name == 'Zufall':
             successes.append('getExistingStudent')
         else:
@@ -63,7 +62,7 @@ def get_existing_student():
 
 def get_non_existing_student():
     try:
-        GetStudentByIdRequest().getStudentById(44)
+        GetStudentByIdRequest().get_student_by_id(44)
         fails.append('getNonExistingStudent:Requesting student with not existing id should have led to error')
     except ApiException:
         successes.append('getNonExistingStudent')
@@ -73,7 +72,7 @@ def get_non_existing_student():
 
 def get_exams_of_existing_student():
     try:
-        exams = GetExamsByStudentIdRequest().getExamsByStudentId(1)
+        exams = GetExamsByStudentIdRequest().get_exams_by_student_id(1)
         expected_exams = [
             Exam(1, 'English'),
             Exam(2, 'Math')
@@ -89,7 +88,7 @@ def get_exams_of_existing_student():
 
 def get_exams_of_non_existing_student():
     try:
-        GetStudentByIdRequest().getStudentById(44)
+        GetExamsByStudentIdRequest().get_exams_by_student_id(44)
         fails.append('getExamsOfNonExistingStudent:Requesting student with not existing id should have led to error')
     except ApiException:
         successes.append('getExamsOfNonExistingStudent')

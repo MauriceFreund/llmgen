@@ -9,6 +9,7 @@ package dx.example.api;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dx.example.model.Pet;
+import dx.example.exception.ApiException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,13 +35,17 @@ public class ListPetsRequest {
      *
      * @returns List<Pet> - An array of pets
      */
-    public List<Pet> listPets() throws IOException, InterruptedException {
+    public List<Pet> listPets() throws IOException, InterruptedException, ApiException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + "/pets"))
                 .version(HttpClient.Version.HTTP_2)
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        int status = response.statusCode();
+        if (status > 299) {
+            throw new ApiException("listPets request failed with status code " + status);
+        }
         TypeReference<List<Pet>> listType = new TypeReference<List<Pet>>() {
         };
         return mapper.readValue(response.body(), listType);

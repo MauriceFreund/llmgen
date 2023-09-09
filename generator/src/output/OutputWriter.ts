@@ -2,12 +2,17 @@ import GeneratorConfiguration from '../input/configuration/GeneratorConfiguratio
 import GeneratorMemory from '../memory/GeneratorMemory';
 import * as fs from 'fs';
 import path from 'path';
+import { withBasePath } from '../util/Utility';
+import { randomUUID } from 'crypto';
+import Mustache from 'mustache';
 
 class OutputWriter {
+    private _config: GeneratorConfiguration;
     private _outDir: string;
     private _fileExtension: string;
 
     constructor(config: GeneratorConfiguration) {
+        this._config = config;
         this._outDir = path.resolve(config.content.meta.outputDir);
         switch (config.content.generator.targetLanguage) {
             case 'Python':
@@ -52,15 +57,32 @@ class OutputWriter {
             const fileName = apiDir + this.getFileNameFromAnswer(pathAnswer) + this._fileExtension;
             fs.writeFileSync(fileName, pathAnswer);
         });
+        this.writeApiException();
+    }
+
+    private writeApiException() {
+        const templateDir = this._fileExtension.replace('.', '')
+        const templateFilePath = withBasePath('src/output/exception-templates/') + templateDir + '/ApiException.mustache';
+        const template = fs.readFileSync(templateFilePath).toString();
+
+        const view = {
+            javaPackagePrefix: this._config.content.generator.javaPackagePrefix,
+        }
+
+        const output = Mustache.render(template, view);
+        fs.mkdirSync(this._outDir + '/exception', { recursive: true, });
+        const outFile = this._outDir + '/exception/ApiException' + this._fileExtension; 
+        console.log('Write exception file to ' + outFile);
+        fs.writeFileSync(outFile, output)
     }
 
     private getFileNameFromAnswer(answer: string): string {
-        const match = answer.match(/@file (\w+)/);
+        const match = answer.match(/class (\w+)/);
 
         if (match && match[1]) {
             return match[1];
         } else {
-            throw Error('Model answer did not specify filename.' + answer);
+            throw Error('Could not extract file name from: ' + answer);
         }
     }
 }

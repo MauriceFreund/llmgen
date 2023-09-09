@@ -1,4 +1,5 @@
-import Pet from '../model/Pet';
+import Pet from '../model/Pet.js';
+import ApiException from '../exception/ApiException.js';
 
 /**
  * This file was auto generated. Do not modify its content.
@@ -10,6 +11,9 @@ class ListPetsRequest {
 
     async listPets() {
         const response = await fetch(`${this.baseUrl}/pets`);
+        if (response.status > 299) {
+            throw new ApiException('listPets request failed with status code ' + response.status);
+        }
         const json = await response.json();
         return json.map((pet) => new Pet(pet.id, pet.name, pet.tag));
     }
