@@ -14,7 +14,6 @@ let fails = []
 async function getAllStudents() {
   try {
     const students = await new GetStudentsRequest().getStudents()
-    console.log(students)
     const expectedStudents = [new Student(1, 'John', 'Doe'), new Student(2, 'Jane', 'Doe')]
     if (JSON.stringify(students) !== JSON.stringify(expectedStudents)) {
       console.log(

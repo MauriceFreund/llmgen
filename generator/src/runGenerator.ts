@@ -71,7 +71,7 @@ export async function runGenerator(configPath: string) {
         const pathExampleEntries = examples
             .filter((ex) => ex.entry.entryType === 'path')
             .map((ex) => ex.entry);
-        const completedEntries = memory.getCompletePathEntries();
+        const completedEntries = memory.getCompleteEntries();
         console.info('Prompting model with path snippet.');
         const result = await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
         totalCost += result.requestInfo.totalCost;
