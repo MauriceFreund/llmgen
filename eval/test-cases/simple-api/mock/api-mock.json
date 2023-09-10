@@ -1,301 +1,301 @@
 {
-  "uuid": "408f797e-b948-4d8b-b78f-99ec6fb158f0",
-  "lastMigration": 28,
-  "name": "Reference API",
-  "endpointPrefix": "",
-  "latency": 0,
-  "port": 3000,
-  "hostname": "",
-  "folders": [],
-  "routes": [
-    {
-      "uuid": "e28f4028-62d4-488e-8932-70fd8d8ae084",
-      "type": "http",
-      "documentation": "Get all students",
-      "method": "get",
-      "endpoint": "students",
-      "responses": [
+    "uuid": "408f797e-b948-4d8b-b78f-99ec6fb158f0",
+    "lastMigration": 28,
+    "name": "Reference API",
+    "endpointPrefix": "",
+    "latency": 0,
+    "port": 3000,
+    "hostname": "",
+    "folders": [],
+    "routes": [
         {
-          "uuid": "64364d28-8671-4908-923e-520e557479ed",
-          "body": "[\n  {\n    \"id\": 1,\n    \"lastName\": \"John\",\n    \"firstName\": \"Doe\"\n  },\n  {\n    \"id\": 2,\n    \"lastName\": \"Jane\",\n    \"firstName\": \"Doe\"\n  }\n]",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "Successful request",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id"
-        }
-      ],
-      "enabled": true,
-      "responseMode": null
-    },
-    {
-      "uuid": "5adf3e6e-bec7-45ab-b54e-ebd81b081097",
-      "type": "http",
-      "documentation": "Create new student",
-      "method": "post",
-      "endpoint": "students",
-      "responses": [
-        {
-          "uuid": "2340e574-da96-4514-a462-9b33e5f71d42",
-          "body": "",
-          "latency": 0,
-          "statusCode": 201,
-          "label": "Successfully created",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id"
+            "uuid": "e28f4028-62d4-488e-8932-70fd8d8ae084",
+            "type": "http",
+            "documentation": "Get all students",
+            "method": "get",
+            "endpoint": "students",
+            "responses": [
+                {
+                    "uuid": "64364d28-8671-4908-923e-520e557479ed",
+                    "body": "[\n  {\n    \"id\": 1,\n    \"lastName\": \"Doe\",\n    \"firstName\": \"John\"\n  },\n  {\n    \"id\": 2,\n    \"lastName\": \"Doe\",\n    \"firstName\": \"Jane\"\n  }\n]",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "Successful request",
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id"
+                }
+            ],
+            "enabled": true,
+            "responseMode": null
         },
         {
-          "uuid": "6acfef3e-831b-4afe-a632-c6e6726bf978",
-          "body": "{}",
-          "latency": 0,
-          "statusCode": 409,
-          "label": "When Student with already existing id is created, then 409 is returned.",
-          "headers": [],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [
-            {
-              "target": "body",
-              "modifier": "id",
-              "value": "1",
-              "invert": false,
-              "operator": "equals"
-            },
-            {
-              "target": "body",
-              "modifier": "id",
-              "value": "2",
-              "invert": false,
-              "operator": "equals"
-            }
-          ],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": false,
-          "crudKey": "id"
-        }
-      ],
-      "enabled": true,
-      "responseMode": null
-    },
-    {
-      "uuid": "69f752fe-6b58-48ed-978d-918320a934c8",
-      "type": "http",
-      "documentation": "Get student by id",
-      "method": "get",
-      "endpoint": "students/:studentId",
-      "responses": [
-        {
-          "uuid": "816264c4-16d6-49d2-8167-d903a6f3c0dd",
-          "body": "{\n  \"id\": {{urlParam 'studentId'}},\n  \"lastName\": \"Zufall\",\n  \"firstName\": \"Rainer\"\n}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "Successful request",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id"
+            "uuid": "5adf3e6e-bec7-45ab-b54e-ebd81b081097",
+            "type": "http",
+            "documentation": "Create new student",
+            "method": "post",
+            "endpoint": "students",
+            "responses": [
+                {
+                    "uuid": "2340e574-da96-4514-a462-9b33e5f71d42",
+                    "body": "",
+                    "latency": 0,
+                    "statusCode": 201,
+                    "label": "Successfully created",
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id"
+                },
+                {
+                    "uuid": "6acfef3e-831b-4afe-a632-c6e6726bf978",
+                    "body": "{}",
+                    "latency": 0,
+                    "statusCode": 409,
+                    "label": "When Student with already existing id is created, then 409 is returned.",
+                    "headers": [],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [
+                        {
+                            "target": "body",
+                            "modifier": "id",
+                            "value": "1",
+                            "invert": false,
+                            "operator": "equals"
+                        },
+                        {
+                            "target": "body",
+                            "modifier": "id",
+                            "value": "2",
+                            "invert": false,
+                            "operator": "equals"
+                        }
+                    ],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id"
+                }
+            ],
+            "enabled": true,
+            "responseMode": null
         },
         {
-          "uuid": "60a353fd-853b-4b37-9c3a-f2415476f032",
-          "body": "",
-          "latency": 0,
-          "statusCode": 404,
-          "label": "Student with provided id does not exist",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [
-            {
-              "target": "params",
-              "modifier": "studentId",
-              "value": "44",
-              "invert": false,
-              "operator": "equals"
-            }
-          ],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": false,
-          "crudKey": "id"
-        }
-      ],
-      "enabled": true,
-      "responseMode": null
-    },
-    {
-      "uuid": "efd8bebf-2c3d-488f-9ff9-bc8afaa4d662",
-      "type": "http",
-      "documentation": "Get all all exams a student is currently signed up for",
-      "method": "get",
-      "endpoint": "exams/:studentId",
-      "responses": [
-        {
-          "uuid": "59129bb1-90ac-4381-9efc-c5c411a724cd",
-          "body": "[\n  {\n    \"id\": 1,\n    \"subject\": \"English\"\n  },\n  {\n    \"id\": 2,\n    \"subject\": \"Math\"\n  }\n]",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "Successful request",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id"
+            "uuid": "69f752fe-6b58-48ed-978d-918320a934c8",
+            "type": "http",
+            "documentation": "Get student by id",
+            "method": "get",
+            "endpoint": "students/:studentId",
+            "responses": [
+                {
+                    "uuid": "816264c4-16d6-49d2-8167-d903a6f3c0dd",
+                    "body": "{\n  \"id\": {{urlParam 'studentId'}},\n  \"lastName\": \"Zufall\",\n  \"firstName\": \"Rainer\"\n}",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "Successful request",
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id"
+                },
+                {
+                    "uuid": "60a353fd-853b-4b37-9c3a-f2415476f032",
+                    "body": "",
+                    "latency": 0,
+                    "statusCode": 404,
+                    "label": "Student with provided id does not exist",
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [
+                        {
+                            "target": "params",
+                            "modifier": "studentId",
+                            "value": "44",
+                            "invert": false,
+                            "operator": "equals"
+                        }
+                    ],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id"
+                }
+            ],
+            "enabled": true,
+            "responseMode": null
         },
         {
-          "uuid": "e69c0229-1c91-4fdd-ae3d-73f40a2e1421",
-          "body": "",
-          "latency": 0,
-          "statusCode": 404,
-          "label": "Student with provided id does not exist",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [
-            {
-              "target": "params",
-              "modifier": "studentId",
-              "value": "44",
-              "invert": false,
-              "operator": "equals"
-            }
-          ],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": false,
-          "crudKey": "id"
+            "uuid": "efd8bebf-2c3d-488f-9ff9-bc8afaa4d662",
+            "type": "http",
+            "documentation": "Get all all exams a student is currently signed up for",
+            "method": "get",
+            "endpoint": "exams/:studentId",
+            "responses": [
+                {
+                    "uuid": "59129bb1-90ac-4381-9efc-c5c411a724cd",
+                    "body": "[\n  {\n    \"id\": 1,\n    \"subject\": \"English\"\n  },\n  {\n    \"id\": 2,\n    \"subject\": \"Math\"\n  }\n]",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "Successful request",
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id"
+                },
+                {
+                    "uuid": "e69c0229-1c91-4fdd-ae3d-73f40a2e1421",
+                    "body": "",
+                    "latency": 0,
+                    "statusCode": 404,
+                    "label": "Student with provided id does not exist",
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [
+                        {
+                            "target": "params",
+                            "modifier": "studentId",
+                            "value": "44",
+                            "invert": false,
+                            "operator": "equals"
+                        }
+                    ],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id"
+                }
+            ],
+            "enabled": true,
+            "responseMode": null
         }
-      ],
-      "enabled": true,
-      "responseMode": null
-    }
-  ],
-  "rootChildren": [
-    {
-      "type": "route",
-      "uuid": "e28f4028-62d4-488e-8932-70fd8d8ae084"
+    ],
+    "rootChildren": [
+        {
+            "type": "route",
+            "uuid": "e28f4028-62d4-488e-8932-70fd8d8ae084"
+        },
+        {
+            "type": "route",
+            "uuid": "5adf3e6e-bec7-45ab-b54e-ebd81b081097"
+        },
+        {
+            "type": "route",
+            "uuid": "69f752fe-6b58-48ed-978d-918320a934c8"
+        },
+        {
+            "type": "route",
+            "uuid": "efd8bebf-2c3d-488f-9ff9-bc8afaa4d662"
+        }
+    ],
+    "proxyMode": false,
+    "proxyHost": "",
+    "proxyRemovePrefix": false,
+    "tlsOptions": {
+        "enabled": false,
+        "type": "CERT",
+        "pfxPath": "",
+        "certPath": "",
+        "keyPath": "",
+        "caPath": "",
+        "passphrase": ""
     },
-    {
-      "type": "route",
-      "uuid": "5adf3e6e-bec7-45ab-b54e-ebd81b081097"
-    },
-    {
-      "type": "route",
-      "uuid": "69f752fe-6b58-48ed-978d-918320a934c8"
-    },
-    {
-      "type": "route",
-      "uuid": "efd8bebf-2c3d-488f-9ff9-bc8afaa4d662"
-    }
-  ],
-  "proxyMode": false,
-  "proxyHost": "",
-  "proxyRemovePrefix": false,
-  "tlsOptions": {
-    "enabled": false,
-    "type": "CERT",
-    "pfxPath": "",
-    "certPath": "",
-    "keyPath": "",
-    "caPath": "",
-    "passphrase": ""
-  },
-  "cors": true,
-  "headers": [
-    {
-      "key": "Access-Control-Allow-Origin",
-      "value": "*"
-    },
-    {
-      "key": "Access-Control-Allow-Methods",
-      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
-    },
-    {
-      "key": "Access-Control-Allow-Headers",
-      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
-    }
-  ],
-  "proxyReqHeaders": [
-    {
-      "key": "",
-      "value": ""
-    }
-  ],
-  "proxyResHeaders": [
-    {
-      "key": "",
-      "value": ""
-    }
-  ],
-  "data": []
+    "cors": true,
+    "headers": [
+        {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+        },
+        {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+        },
+        {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+        }
+    ],
+    "proxyReqHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "proxyResHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "data": []
 }

@@ -17,8 +17,8 @@ def get_all_students():
     try:
         students = GetStudentsRequest().get_students()
         expected_students = [
-            Student(1, "John", "Doe"),
-            Student(2, "Jane", "Doe")
+            Student(1, "Doe", "John"),
+            Student(2, "Doe", "Jane")
         ]
         if students != expected_students:
             fails.append('getAllStudents:Received students that did not match expected values')
@@ -51,7 +51,8 @@ def post_invalid_student():
 def get_existing_student():
     try:
         student = GetStudentByIdRequest().get_student_by_id(1)
-        if student.id == 1 and student.first_name == 'Rainer' and student.last_name == 'Zufall':
+        expected_student = Student(1, "Zufall", "Rainer")
+        if student == expected_student:
             successes.append('getExistingStudent')
         else:
             print(f"getExistingStudent failed: {student} did not match expected values")

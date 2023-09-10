@@ -51,15 +51,16 @@ class ChatModel {
             };
         }
 
-        const cost = calculateRequestCost(
-            this.modelName,
-            inTokens,
-            outTokens,
-        )
+        let cost: number = -1;
+        try {
+            cost = calculateRequestCost(this.modelName, inTokens, outTokens);
+        } catch {
+            console.log('Could not calculate request cost.');
+        }
         return {
             totalTokens: inTokens + outTokens,
             totalCost: cost,
-        }
+        };
     }
 }
 

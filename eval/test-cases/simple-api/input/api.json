@@ -134,7 +134,7 @@
                         "required": true,
                         "description": "The id of the student",
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],

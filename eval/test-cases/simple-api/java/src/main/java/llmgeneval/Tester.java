@@ -44,7 +44,7 @@ public class Tester {
     public static void getAllStudents() {
         try {
             List<Student> students = new GetStudentsRequest().getStudents();
-            List<Student> expectedStudents = Arrays.asList(new Student(1, "John", "Doe"), new Student(2, "Jane", "Doe"));
+            List<Student> expectedStudents = Arrays.asList(new Student(1, "Doe", "John"), new Student(2, "Doe", "Jane"));
             if (!students.equals(expectedStudents)) {
                 System.out.println("getAllStudents failed: " + students + " did not match expected " + expectedStudents);
                 fails.add("getAllStudents:Received students that did not match expected values");
@@ -81,8 +81,9 @@ public class Tester {
 
     public static void getExistingStudent() {
         try {
-            Student student = new GetStudentByIdRequest().getStudentById("1");
-            if (student.getId() == 1 && "Rainer".equals(student.getFirstName()) && "Zufall".equals(student.getLastName())) {
+            Student student = new GetStudentByIdRequest().getStudentById(1);
+            Student expectedStudent = new Student(1, "Zufall", "Rainer");
+            if (student.equals(expectedStudent)) {
                 successes.add("getExistingStudent");
             } else {
                 System.out.println("getExistingStudent failed: " + student + " did not match expected values");
@@ -95,7 +96,7 @@ public class Tester {
 
     public static void getNonExistingStudent() {
         try {
-            new GetStudentByIdRequest().getStudentById("44");
+            new GetStudentByIdRequest().getStudentById(44);
             fails.add("getNonExistingStudent:Requesting student with non-existing id should have led to error");
         } catch (ApiException e) {
             successes.add("getNonExistingStudent");
@@ -107,7 +108,7 @@ public class Tester {
 
     public static void getExamsOfExistingStudent() {
         try {
-            List<Exam> exams = new GetExamsByStudentIdRequest().getExamsByStudentId("1");
+            List<Exam> exams = new GetExamsByStudentIdRequest().getExamsByStudentId(1);
             List<Exam> expectedExams = Arrays.asList(new Exam(1, "English"), new Exam(2, "Math"));
             if (exams.equals(expectedExams)) {
                 successes.add("getExamsOfExistingStudent");
@@ -122,7 +123,7 @@ public class Tester {
 
     public static void getExamsOfNonExistingStudent() {
         try {
-            new GetStudentByIdRequest().getStudentById("44");
+            new GetExamsByStudentIdRequest().getExamsByStudentId(44);
             fails.add("getExamsOfNonExistingStudent:Requesting student with non-existing id should have led to error");
         } catch (ApiException e) {
             successes.add("getExamsOfNonExistingStudent");

@@ -56,4 +56,29 @@ public class Pet {
     public String toString() {
         return "Student{id=" + this.id + ", name=" + this.name + ", tag=" + this.tag + "}";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Pet)) {
+            return false;
+        }
+
+        Pet otherPet = (Pet) obj;
+
+        return this.id == otherPet.id 
+            && ((this.name == null && otherPet.name == null) || (this.name != null && this.name.equals(otherPet.name))) 
+            && ((this.tagId == null && otherPet.tagId == null) || (this.tagId != null && this.tagId.equals(otherPet.tagId)));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Integer.hashCode(id);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (tagId != null ? tagId.hashCode() : 0);
+        return result;
+    }
 }
