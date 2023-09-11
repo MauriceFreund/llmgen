@@ -13,6 +13,7 @@ export interface GeneratorMemoryEntry<T extends OpenApiSnippet> {
     metadata: OpenApiSpecMetadata;
     entryType: MemoryEntryType;
     answer?: string;
+    generatedClassName?: string;
 }
 
 export interface SchemaEntry extends GeneratorMemoryEntry<SchemaSnippet> {

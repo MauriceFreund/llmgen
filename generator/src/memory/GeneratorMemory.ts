@@ -59,7 +59,8 @@ class GeneratorMemory {
                 'Error in GeneratorMemory.completeEntry: Could not find entry for completion.',
             );
         }
-        this._entries.set(id, { ...entry, answer });
+        const generatedClassName = this.getFileNameFromAnswer(answer);
+        this._entries.set(id, { ...entry, answer, generatedClassName });
     }
 
     getIncompleteEntries(): GeneratorMemoryEntry<OpenApiSnippet>[] {
@@ -92,6 +93,44 @@ class GeneratorMemory {
         return this.getCompleteEntries()
             .filter((entry) => entry.entryType === 'path')
             .map((entry) => entry as GeneratorMemoryEntry<PathSnippet>);
+    }
+
+    getCompleteEntriesRelevantForSchemaPrompt(): GeneratorMemoryEntry<OpenApiSnippet>[] {
+        const schemaSnippets = this.getCompleteSchemaEntries();
+
+        if (schemaSnippets.length > 0) return [schemaSnippets[0]];
+        return [];
+    }
+
+    getCompleteEntriesRelevantForPathPrompt(entry: GeneratorMemoryEntry<PathSnippet>): GeneratorMemoryEntry<OpenApiSnippet>[] {
+        const pathEntries = this.getCompletePathEntries();
+        const relevantEntries: GeneratorMemoryEntry<OpenApiSnippet>[] = 
+            this.getSchemaSnippetsReferencedByPath(entry.snippet);
+        if (pathEntries.length > 0) {
+            relevantEntries.push(pathEntries[0]);
+        }
+        return relevantEntries;
+    }
+    
+    private getSchemaSnippetsReferencedByPath(pathSnippet: PathSnippet): GeneratorMemoryEntry<OpenApiSnippet>[] {
+        const completedSchemas = this.getCompleteSchemaEntries();
+
+        return completedSchemas.filter((schema) => {
+            if (schema.generatedClassName) {
+                return JSON.stringify(pathSnippet).includes(schema.generatedClassName);
+            }
+            return false;
+        });
+    }
+
+    private getFileNameFromAnswer(answer: string): string | undefined {
+        const match = answer.match(/class (\w+)/);
+
+        if (match && match[1]) {
+            return match[1];
+        } else {
+            return undefined;
+        }
     }
 
     log() {

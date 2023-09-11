@@ -61,7 +61,7 @@ export async function runGenerator(configPath: string) {
         const schemaExampleEntries = examples
             .filter((ex) => ex.entry.entryType === 'schema')
             .map((ex) => ex.entry);
-        const completedEntries = memory.getCompleteSchemaEntries();
+        const completedEntries = memory.getCompleteEntriesRelevantForSchemaPrompt();
         console.info('Prompting model with schema snippet.');
         const result = await promptModel(entry, [...schemaExampleEntries, ...completedEntries], memory, config);
         totalCost += result.requestInfo.totalCost;
@@ -71,7 +71,7 @@ export async function runGenerator(configPath: string) {
         const pathExampleEntries = examples
             .filter((ex) => ex.entry.entryType === 'path')
             .map((ex) => ex.entry);
-        const completedEntries = memory.getCompleteEntries();
+        const completedEntries = memory.getCompleteEntriesRelevantForPathPrompt(entry);
         console.info('Prompting model with path snippet.');
         const result = await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
         totalCost += result.requestInfo.totalCost;

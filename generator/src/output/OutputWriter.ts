@@ -5,6 +5,8 @@ import path from 'path';
 import { withBasePath } from '../util/Utility';
 import { randomUUID } from 'crypto';
 import Mustache from 'mustache';
+import { GeneratorMemoryEntry } from '../memory/GeneratorMemoryEntry';
+import { OpenApiSnippet } from '../input/openapi/OpenApiSpecContent';
 
 class OutputWriter {
     private _config: GeneratorConfiguration;
@@ -28,15 +30,14 @@ class OutputWriter {
     }
 
     writeOutput(memory: GeneratorMemory) {
-        const schemaAnswers = memory
+        console.log(`Writing generated code to ${this._outDir}`);
+        const schemaEntries = memory
             .getCompleteSchemaEntries()
-            .map((entry) => entry.answer)
-            .filter((answer) => answer !== undefined) as string[];
+            .filter((entry) => entry.answer !== undefined && entry.generatedClassName !== undefined);
 
-        const pathAnswers = memory
+        const pathEntries = memory
             .getCompletePathEntries()
-            .map((entry) => entry.answer)
-            .filter((answer) => answer !== undefined) as string[];
+            .filter((entry) => entry.answer !== undefined && entry.generatedClassName !== undefined);
 
         const modelDir = this._outDir + '/model/';
         const apiDir = this._outDir + '/api/';
@@ -47,15 +48,15 @@ class OutputWriter {
             fs.mkdirSync(apiDir, { recursive: true });
         } catch { }
 
-        schemaAnswers.forEach((schemaAnswer) => {
+        schemaEntries.forEach((schemaAnswer) => {
             const fileName =
-                modelDir + this.getFileNameFromAnswer(schemaAnswer) + this._fileExtension;
-            fs.writeFileSync(fileName, schemaAnswer);
+                modelDir + this.getFileNameFromSnippet(schemaAnswer) + this._fileExtension;
+            fs.writeFileSync(fileName, schemaAnswer.answer!);
         });
 
-        pathAnswers.forEach((pathAnswer) => {
-            const fileName = apiDir + this.getFileNameFromAnswer(pathAnswer) + this._fileExtension;
-            fs.writeFileSync(fileName, pathAnswer);
+        pathEntries.forEach((pathAnswer) => {
+            const fileName = apiDir + this.getFileNameFromSnippet(pathAnswer) + this._fileExtension;
+            fs.writeFileSync(fileName, pathAnswer.answer!);
         });
         this.writeApiException();
     }
@@ -76,13 +77,11 @@ class OutputWriter {
         fs.writeFileSync(outFile, output)
     }
 
-    private getFileNameFromAnswer(answer: string): string {
-        const match = answer.match(/class (\w+)/);
-
-        if (match && match[1]) {
-            return match[1];
+    private getFileNameFromSnippet(snippet: GeneratorMemoryEntry<OpenApiSnippet>): string {
+        if (snippet.generatedClassName) {
+            return snippet.generatedClassName;
         } else {
-            throw Error('Could not extract file name from: ' + answer);
+            throw Error('Could not extract file name from: ' + snippet.answer);
         }
     }
 }
