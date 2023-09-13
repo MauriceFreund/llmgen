@@ -12,8 +12,6 @@ if test -d "./src/main/java/llmgeneval/generated/"; then
     rm -r ./src/main/java/llmgeneval/generated/
 fi
 
-mkdir ./src/generated/
-
 echo Start Mock Api
 mockoon-cli start --data ../mock/api-mock.json &
 mockoon_pid=$!
