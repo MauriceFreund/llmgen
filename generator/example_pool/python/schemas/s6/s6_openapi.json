@@ -1,0 +1,24 @@
+{
+    "Car": {
+        "description": "The Car class",
+        "allOf": [
+            { "$ref": "#/components/schemas/Vehicle" },
+            {
+                "type": "object",
+                "required": [
+                    "licensePlate",
+                    "vehicleType"
+                ],
+                "properties": {
+                    "licensePlate": {
+                        "type": "string"
+                    },
+                    "vehicleType": {
+                        "type": "string",
+                        "enum": ["CAR"]
+                    }
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "Vehicle": {
+        "type": "object",
+        "description": "The base class of all vehicles",
+        "required": [
+            "id"
+        ],
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "price": {
+                "type": "integer"
+            }
+        },
+        "oneOf": [
+            {
+                "$ref": "#/components/schemas/Car"
+            },
+            {
+                "$ref": "#/components/schemas/Boat"
+            }
+        ],
+        "discriminator": {
+            "propertyName": "vehicleType"
+        }
+    }
+}
