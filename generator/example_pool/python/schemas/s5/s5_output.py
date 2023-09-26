@@ -9,7 +9,7 @@ from .Vehicle import Vehicle
 class Car(Vehicle):
 
     def __init__(self, id, licensePlate):
-        super(id)
+        super().__init__(id)
         self.licensePlate = licensePlate
         self.vehicleType = "CAR"
 
