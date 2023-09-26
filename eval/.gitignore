@@ -7,6 +7,7 @@ runtime
 
 # java
 build/
+bin/
 .classpath
 .gitattributes
 .project
