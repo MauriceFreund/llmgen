@@ -12,7 +12,7 @@ let fails = [];
 
 async function getLetterById() {
     try {
-        const letter = await GetDocumentByIdRequest.getDocumentById(1);
+        const letter = await new GetDocumentByIdRequest().getDocumentById(1);
         if (
             letter.id === 1
             && letter.destination === "Germany"
@@ -29,7 +29,7 @@ async function getLetterById() {
 
 async function getCertificateById() {
     try {
-        const certificate = await GetDocumentByIdRequest.getDocumentById(2);
+        const certificate = await new GetDocumentByIdRequest().getDocumentById(2);
         if (
             certificate.id === 2
             && certificate.certificateHolder === "Maria Mustermann"
@@ -46,7 +46,7 @@ async function getCertificateById() {
 
 async function getDocumentByUnknownId() {
     try {
-        await GetDocumentByIdRequest.getDocumentById(3);
+        await new GetDocumentByIdRequest().getDocumentById(3);
         fails.push("getDocumentByUnknownId:Request should have led to error but did not.");
     } catch (e) {
         if (e instanceof ApiException) {
@@ -60,7 +60,7 @@ async function getDocumentByUnknownId() {
 async function saveLetter() {
     try {
         const letter = new Letter(3, "Mars", "LETTER");
-        await PostDocumentRequest.postDocument(letter);
+        await new PostDocumentRequest().postDocument(letter);
         successes.push("saveLetter");
     } catch (e) {
         fails.push("saveLetter:" + e);
@@ -70,7 +70,7 @@ async function saveLetter() {
 async function saveCertificate() {
     try {
         const certificate = new Certificate(4, "Rainer Zufall", "CERTIFICATE");
-        await PostDocumentRequest.postDocument(certificate);
+        await new PostDocumentRequest().postDocument(certificate);
         successes.push("saveCertificate");
     } catch (e) {
         fails.push("saveCertificate:" + e);
@@ -80,7 +80,7 @@ async function saveCertificate() {
 async function postDocumentWithConflictingId() {
     try {
         const document = new Document(1);
-        await PostDocumentRequest.postDocument(document);
+        await new PostDocumentRequest().postDocument(document);
         fails.push("postDocumentWithConflictingId:Request should have led to error but did not.");
     } catch (e) {
         if (e instanceof ApiException) {
