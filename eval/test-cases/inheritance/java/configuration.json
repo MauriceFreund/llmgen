@@ -4,7 +4,7 @@
         "inputPaths": {
             "openApi": "../input/api.json"
         },
-        "outputDir": "./src/main/java/generated/"
+        "outputDir": "./src/main/java/llmgeneval/generated/"
     },
     "generator": {
         "targetLanguage": "Java",
