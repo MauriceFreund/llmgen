@@ -4,7 +4,7 @@
  * @file Vehicle
  */
 
-package dx.example.model;
+package model.vehicles.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

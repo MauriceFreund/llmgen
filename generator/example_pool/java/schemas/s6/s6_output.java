@@ -4,7 +4,7 @@
  * @file Car
  */
 
-package dx.example.model;
+package inh.pack.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

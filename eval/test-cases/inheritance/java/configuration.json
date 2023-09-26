@@ -8,6 +8,7 @@
     },
     "generator": {
         "targetLanguage": "Java",
-        "comments": false
+        "comments": false,
+        "javaPackagePrefix": "llmgeneval.generated"
     }
 }
