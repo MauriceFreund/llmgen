@@ -67,26 +67,28 @@ class ExampleReader {
     readSchemas(): Example<SchemaSnippet>[] {
         const schemaPath = path.resolve(this._examplePoolPath + '/schemas');
         const schemaLocations = fs.readdirSync(schemaPath);
-        return schemaLocations.map((schemaFileName) => {
-            const config = this.readConfig(this.configFilePath(schemaPath, schemaFileName));
-            const metadata = this.readMetadata(this.metadataFilePath(schemaPath, schemaFileName));
-            const snippet = this.readSnippet(
-                this.snippetFilePath(schemaPath, schemaFileName),
-            ) as SchemaSnippet;
-            const answer = this.readAnswer(schemaPath, schemaFileName);
+        return schemaLocations
+            .filter((schemaFileName) => schemaFileName.startsWith("s"))
+            .map((schemaFileName) => {
+                const config = this.readConfig(this.configFilePath(schemaPath, schemaFileName));
+                const metadata = this.readMetadata(this.metadataFilePath(schemaPath, schemaFileName));
+                const snippet = this.readSnippet(
+                    this.snippetFilePath(schemaPath, schemaFileName),
+                ) as SchemaSnippet;
+                const answer = this.readAnswer(schemaPath, schemaFileName);
 
-            const entry: GeneratorMemoryEntry<SchemaSnippet> = {
-                id: randomUUID(),
-                metadata,
-                snippet,
-                answer,
-                entryType: 'schema',
-            };
+                const entry: GeneratorMemoryEntry<SchemaSnippet> = {
+                    id: randomUUID(),
+                    metadata,
+                    snippet,
+                    answer,
+                    entryType: 'schema',
+                };
 
-            return {
-                config,
-                entry,
-            };
+                return {
+                    config,
+                    entry,
+                };
         });
     }
 
@@ -105,26 +107,28 @@ class ExampleReader {
     readPaths(): Example<PathSnippet>[] {
         const pathsPath = path.resolve(this._examplePoolPath + '/paths');
         const pathLocations = fs.readdirSync(this._examplePoolPath + '/paths');
-        return pathLocations.map((pathFileName) => {
-            const config = this.readConfig(this.configFilePath(pathsPath, pathFileName));
-            const metadata = this.readMetadata(this.metadataFilePath(pathsPath, pathFileName));
-            const snippet = this.readSnippet(
-                this.snippetFilePath(pathsPath, pathFileName),
-            ) as PathSnippet;
-            const answer = this.readAnswer(pathsPath, pathFileName);
+        return pathLocations
+            .filter((pathFileName) => pathFileName.startsWith("p"))
+            .map((pathFileName) => {
+                const config = this.readConfig(this.configFilePath(pathsPath, pathFileName));
+                const metadata = this.readMetadata(this.metadataFilePath(pathsPath, pathFileName));
+                const snippet = this.readSnippet(
+                    this.snippetFilePath(pathsPath, pathFileName),
+                ) as PathSnippet;
+                const answer = this.readAnswer(pathsPath, pathFileName);
 
-            const entry: GeneratorMemoryEntry<PathSnippet> = {
-                id: randomUUID(),
-                metadata,
-                snippet,
-                answer,
-                entryType: 'path',
-            };
+                const entry: GeneratorMemoryEntry<PathSnippet> = {
+                    id: randomUUID(),
+                    metadata,
+                    snippet,
+                    answer,
+                    entryType: 'path',
+                };
 
-            return {
-                config,
-                entry,
-            };
+                return {
+                    config,
+                    entry,
+                };
         });
     }
 
