@@ -4,7 +4,7 @@ This file was auto generated. Do not modify its content.
 @file Car
 """
 
-import Vehicle
+from .Vehicle import Vehicle
 
 class Car(Vehicle):
 
