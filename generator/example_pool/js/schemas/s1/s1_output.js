@@ -9,6 +9,14 @@ class Pet {
         this.name = name;
         this.tag = tag;
     }
+
+    static fromJson(json) {
+        return new Pet(json.id, json.name, json.tag);
+    }
+
+    static toJson() {
+        return JSON.stringify(this);
+    }
 }
 
 export default Pet;

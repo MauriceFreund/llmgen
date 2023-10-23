@@ -33,6 +33,4 @@ RUN npm i && ./relink
 
 WORKDIR /usr/pipeline/eval
 
-ENV OPENAI_API_KEY = key
-
-CMD ["python3", "pipeline.py"]
+CMD ["python3", "pipeline.py", "5"]

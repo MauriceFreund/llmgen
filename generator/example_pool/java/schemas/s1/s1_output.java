@@ -7,6 +7,8 @@
 package dx.example.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class Pet {
 
@@ -23,6 +25,16 @@ public class Pet {
         this.id = id;
         this.name = name;
         this.tag = tag;
+    }
+
+    public static Pet fromJson(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(json, Pet.class);
+    }
+
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(this);
     }
 
     public int getId() {
@@ -50,7 +62,7 @@ public class Pet {
     }
 
     public String toString() {
-        return "Student{id=" + this.id + ", name=" + this.name + ", tag=" + this.tag + "}";
+        return "Pet{id=" + this.id + ", name=" + this.name + ", tag=" + this.tag + "}";
     }
 
     @Override
@@ -67,14 +79,14 @@ public class Pet {
 
         return this.id == otherPet.id 
             && ((this.name == null && otherPet.name == null) || (this.name != null && this.name.equals(otherPet.name))) 
-            && ((this.tagId == null && otherPet.tagId == null) || (this.tagId != null && this.tagId.equals(otherPet.tagId)));
+            && ((this.tag == null && otherPet.tag == null) || (this.tag != null && this.tag.equals(otherPet.tagId)));
     }
 
     @Override
     public int hashCode() {
         int result = Integer.hashCode(id);
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (tagId != null ? tagId.hashCode() : 0);
+        result = 31 * result + (tag != null ? tag.hashCode() : 0);
         return result;
     }
 }

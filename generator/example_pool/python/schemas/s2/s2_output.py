@@ -15,6 +15,13 @@ class Pet:
         self.name = name
         self.tag = tag
 
+    @staticmethod
+    def fromJson(json):
+        return Pet(**json)
+
+    def toJson(self):
+        return self.__dict__
+
     def __str__(self):
         return f'Student(id={self.id}, name={self.name}, tag={self.tag})'
 

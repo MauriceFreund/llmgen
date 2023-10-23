@@ -8,7 +8,7 @@ NUM_TEST_RUNS = 1 if len(sys.argv) <= 1 else int(sys.argv[1])
 OUTPUT_FILE_PATH = "./results/test-results.json"
 TEST_OUTPUT_MARKER = "#+#"
 TARGET_LANGUAGES = ["js", "py", "java"]
-
+TEST_CASES = ["simple-api"]
 
 def log(msg):
     print("[eval-pipeline]", msg)
@@ -22,6 +22,7 @@ def run_test_script(parent_dir):
             text=True
     )
     try:
+        print(process_output.stdout)
         test_output_str = process_output.stdout.split(TEST_OUTPUT_MARKER)[1]
         print(test_output_str)
         return json.loads(test_output_str)
@@ -66,7 +67,8 @@ def run_test(test_dir, test_map):
 if __name__ == "__main__":
     log("Running test pipeline.")
     dir_content = Path("./test-cases/").iterdir()
-    test_cases = [path for path in dir_content if path.is_dir()]
+    test_cases = [path for path in dir_content if path.is_dir() and path.name in TEST_CASES]
+
     test_map = {}
     for test in test_cases:
         run_test(test, test_map)

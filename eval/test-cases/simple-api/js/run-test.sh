@@ -12,8 +12,6 @@ if test -d "./src/generated/"; then
     rm -rf ./src/generated
 fi
 
-mkdir ./src/generated/
-
 echo Start Mock Api
 mockoon-cli start --data ../mock/api-mock.json &
 mockoon_pid=$!

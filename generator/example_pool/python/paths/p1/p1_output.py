@@ -18,4 +18,4 @@ class ListPetsRequest:
         response = requests.get(f'{self.baseUrl}/pets')
         if response.status_code > 299:
             raise ApiException("list_pet request failed with status code " + response.status_code)
-        return [Pet(**pet) for pet in response.json()]
+        return [Pet.fromJson(pet) for pet in response.json()]
