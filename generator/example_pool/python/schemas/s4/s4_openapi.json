@@ -1,19 +1,29 @@
 {
-    "Pet": {
+    "Vehicle": {
         "type": "object",
-        "description": "Represents a pet",
-        "required": ["id", "name"],
+        "description": "The base class of all vehicles",
+        "required": [
+            "id"
+        ],
         "properties": {
             "id": {
-                "type": "integer",
-                "format": "int64"
+                "type": "integer"
             },
-            "name": {
-                "type": "string"
-            },
-            "tag": {
-                "type": "string"
+            "price": {
+                "type": "integer"
             }
+        },
+        "oneOf": [
+            {
+                "$ref": "#/components/schemas/Car"
+            },
+            {
+                "$ref": "#/components/schemas/Boat"
+            }
+        ],
+        "discriminator": {
+            "propertyName": "vehicleType"
         }
     }
 }
+
