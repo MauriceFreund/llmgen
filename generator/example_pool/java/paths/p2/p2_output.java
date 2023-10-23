@@ -8,6 +8,7 @@ package dx.example.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dx.example.model.Pet;
 import dx.example.exception.ApiException;
 
@@ -17,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.ArrayList;
 
 public class ListPetsRequest {
 
@@ -35,7 +37,7 @@ public class ListPetsRequest {
      *
      * @returns List<Pet> - An array of pets
      */
-    public List<Pet> listPets() throws IOException, InterruptedException, ApiException {
+    public List<Pet> listPets() throws IOException, InterruptedException, ApiException, JsonProcessingException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + "/pets"))
                 .version(HttpClient.Version.HTTP_2)
@@ -46,8 +48,13 @@ public class ListPetsRequest {
         if (status > 299) {
             throw new ApiException("listPets request failed with status code " + status);
         }
-        TypeReference<List<Pet>> listType = new TypeReference<List<Pet>>() {
-        };
-        return mapper.readValue(response.body(), listType);
+        List<Object> jsonNodes = mapper.readValue(response.body(), List.class);
+        List<Student> pets = new ArrayList<>();
+
+        for (Object jsonNode : jsonNodes) {
+            pets.add(Pet.fromJson(mapper.writeValueAsString(jsonNode)));
+        }
+
+        return pets;
     }
 }
