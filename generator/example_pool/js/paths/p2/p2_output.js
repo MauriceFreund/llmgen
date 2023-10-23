@@ -20,7 +20,7 @@ class ListPetsRequest {
             throw new ApiException('listPets request failed with status code ' + response.status);
         }
         const json = await response.json();
-        return json.map((pet) => new Pet(pet.id, pet.name, pet.tag));
+        return json.map(Pet.fromJson);
     }
 }
 
