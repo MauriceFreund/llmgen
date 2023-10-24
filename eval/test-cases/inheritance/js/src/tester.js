@@ -46,7 +46,7 @@ async function getCertificateById() {
 
 async function getDocumentByUnknownId() {
     try {
-        await new GetDocumentByIdRequest().getDocumentById(3);
+        const res = await new GetDocumentByIdRequest().getDocumentById(3);
         fails.push("getDocumentByUnknownId:Request should have led to error but did not.");
     } catch (e) {
         if (e instanceof ApiException) {
