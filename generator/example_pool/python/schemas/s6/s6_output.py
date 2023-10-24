@@ -11,10 +11,17 @@ class Car(Vehicle):
     The Car class
     """
 
-    def __init__(self, id, licensePlate):
-        super().__init__(id)
+    def __init__(self, id, price, licensePlate):
+        super().__init__(id, price)
         self.licensePlate = licensePlate
         self.vehicleType = "CAR"
+
+    @staticmethod
+    def fromJson(json):
+        return Car(json['id'], json['price'], json['licensePlate'])
+
+    def toJson(self):
+        return self.__dict__
 
     def __str__(self):
         return f'Car(id={self.id}, licensePlate={self.licensePlate}, vehicleType={self.vehicleType})'
@@ -24,3 +31,5 @@ class Car(Vehicle):
             return False
 
         return (self.id == other.id) and (self.licensePlate == other.licensePlate) and (self.vehicleType == other.vehicleType)
+
+Vehicle.register_factory("CAR", Car.fromJson)

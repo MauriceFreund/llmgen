@@ -14,7 +14,7 @@ class Pet:
 
     @staticmethod
     def fromJson(json):
-        return Pet(**json)
+        return Pet(json['id'], json.get('name', None), json.get('tag', None))
 
     def toJson(self):
         return self.__dict__

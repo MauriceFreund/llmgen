@@ -14,6 +14,7 @@ fails = []
 def get_letter_by_id():
     try:
         letter = GetDocumentByIdRequest().get_document_by_id(1)
+        print(letter)
         if (letter.id == 1):
             successes.append("getLetterById")
         else:
