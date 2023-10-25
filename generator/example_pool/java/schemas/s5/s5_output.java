@@ -7,21 +7,32 @@
 package inh.pack.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Car extends Vehicle {
 
     @JsonProperty("licensePlate")
     private String licensePlate;
     @JsonProperty("vehicleType")
-    private String vehicleType;
+    public static String vehicleType = "CAR";
 
     public Car() {
     }
-    
+
     public Car(int id, String licensePlate) {
         super(id);
         this.licensePlate = licensePlate;
-        this.vehicleType = "CAR";
+    }
+
+    public static Car fromJson(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(json, Car.class);
+    }
+
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(this);
     }
 
     public String getLicensePlate() {
@@ -31,17 +42,18 @@ public class Car extends Vehicle {
     public void setLicensePlate(String licensePlate) {
         this.licensePlate = licensePlate;
     }
-    
+
     public String getVehicleType() {
-        return this.vehicleType;
+        return Car.vehicleType;
     }
 
     public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
+        Car.vehicleType = vehicleType;
     }
 
     public String toString() {
-        return "Car{id=" + super.getId() + ", licensePlate=" + this.licensePlate + "vehicleType=" + this.vehicleType + "}";
+        return "Car{id=" + super.getId() + ", licensePlate=" + this.licensePlate + "vehicleType=" + this.vehicleType
+                + "}";
     }
 
     @Override
@@ -56,9 +68,11 @@ public class Car extends Vehicle {
 
         Car otherCar = (Car) obj;
 
-        return super.getId() == otherCar.getId() 
-            && ((this.licensePlate == null && otherCar.licensePlate == null) || (this.licensePlate != null && this.licensePlate.equals(otherCar.licensePlate))) 
-            && ((this.vehicleType == null && otherCar.vehicleType == null) || (this.vehicleType != null && this.vehicleType.equals(otherCar.vehicleType)));
+        return super.getId() == otherCar.getId()
+                && ((this.licensePlate == null && otherCar.licensePlate == null)
+                        || (this.licensePlate != null && this.licensePlate.equals(otherCar.licensePlate)))
+                && ((this.vehicleType == null && otherCar.vehicleType == null)
+                        || (this.vehicleType != null && this.vehicleType.equals(otherCar.vehicleType)));
     }
 
     @Override

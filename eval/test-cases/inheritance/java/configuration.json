@@ -1,6 +1,6 @@
 {
     "meta": {
-        "model": "gpt-3.5-turbo",
+        "model": "gpt-3.5-turbo-16k",
         "inputPaths": {
             "openApi": "../input/api.json"
         },

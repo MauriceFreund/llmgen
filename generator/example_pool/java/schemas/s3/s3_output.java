@@ -6,9 +6,18 @@
 
 package model.vehicles.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Vehicle {
+
+    private static Map<String, Function<String, Vehicle>> factories = new HashMap<>();
 
     @JsonProperty("id")
     private int id;
@@ -17,10 +26,25 @@ public class Vehicle {
 
     public Vehicle() {
     }
-    
+
     public Vehicle(int id, int price) {
         this.id = id;
         this.price = price;
+    }
+
+    public static Vehicle fromJson(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(json);
+        String vehicleType = jsonNode.get("vehicleType").asText();
+        if (vehicleType != "") {
+            return factories.get(vehicleType).apply(json);
+        }
+        return objectMapper.readValue(json, Vehicle.class);
+    }
+
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(this);
     }
 
     public int getId() {
@@ -55,8 +79,8 @@ public class Vehicle {
 
         Vehicle otherVehicle = (Vehicle) obj;
 
-        return this.id == otherVehicle.id 
-            && this.price == otherVehicle.price;    
+        return this.id == otherVehicle.id
+                && this.price == otherVehicle.price;
     }
 
     @Override
@@ -64,5 +88,26 @@ public class Vehicle {
         int result = Integer.hashCode(id);
         result = 31 * result + Integer.hashCode(price);
         return result;
+    }
+
+    public static void registerFactory(String vehicleType, Function<String, Vehicle> factoryFunction) {
+        factories.put(vehicleType, factoryFunction);
+    }
+
+    static {
+        Vehicle.registerFactory(Car.vehicleType, json -> {
+            try {
+                return Car.fromJson(json);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        Vehicle.registerFactory(Boat.vehicleType, json -> {
+            try {
+                return Boat.fromJson(json);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

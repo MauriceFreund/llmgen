@@ -34,7 +34,7 @@ async function promptModel<T extends OpenApiSnippet>(
                 totalTokens: 0,
                 totalCost: 0,
             },
-        }
+        };
     }
 }
 
@@ -50,7 +50,6 @@ export async function runGenerator(configPath: string) {
     const outputWriter = new OutputWriter(config);
 
     const exampleReader = new ExampleReader(config);
-    const examples = exampleReader.readExamples();
 
     console.info(`Initialized memory with ${memory.getIncompleteEntries().length} entries.`);
 
@@ -58,22 +57,34 @@ export async function runGenerator(configPath: string) {
     var totalTokens = 0;
 
     for (const entry of memory.getIncompleteSchemaEntries()) {
+        const examples = exampleReader.readExamples(entry.snippet);
         const schemaExampleEntries = examples
             .filter((ex) => ex.entry.entryType === 'schema')
             .map((ex) => ex.entry);
         const completedEntries = memory.getCompleteEntriesRelevantForSchemaPrompt();
         console.info('Prompting model with schema snippet.');
-        const result = await promptModel(entry, [...schemaExampleEntries, ...completedEntries], memory, config);
+        const result = await promptModel(
+            entry,
+            [...schemaExampleEntries, ...completedEntries],
+            memory,
+            config,
+        );
         totalCost += result.requestInfo.totalCost;
         totalTokens += result.requestInfo.totalTokens;
     }
     for (const entry of memory.getIncompletePathEntries()) {
+        const examples = exampleReader.readExamples(entry.snippet);
         const pathExampleEntries = examples
             .filter((ex) => ex.entry.entryType === 'path')
             .map((ex) => ex.entry);
         const completedEntries = memory.getCompleteEntriesRelevantForPathPrompt(entry);
         console.info('Prompting model with path snippet.');
-        const result = await promptModel(entry, [...pathExampleEntries, ...completedEntries], memory, config);
+        const result = await promptModel(
+            entry,
+            [...pathExampleEntries, ...completedEntries],
+            memory,
+            config,
+        );
         totalCost += result.requestInfo.totalCost;
         totalTokens += result.requestInfo.totalTokens;
     }

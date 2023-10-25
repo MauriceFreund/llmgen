@@ -36,15 +36,25 @@ class ExampleReader {
         }
     }
 
-    readExamples(): Example<OpenApiSnippet>[] {
-        const examples = [...this.readSchemas(), ...this.readPaths()]        
+    readExamples(nextInputSnippet: OpenApiSnippet): Example<OpenApiSnippet>[] {
+        const nextInputRequiresInheritance =
+            this.openApiSnippetRequiresInheritance(nextInputSnippet);
+        const examples = [...this.readSchemas(), ...this.readPaths()].filter(
+            (ex) =>
+                this.openApiSnippetRequiresInheritance(ex.entry.snippet) ===
+                nextInputRequiresInheritance,
+        );
         const maxMatchScore = Math.max(...examples.map((ex) => this.exampleMatchScore(ex.config)));
 
         if (maxMatchScore === 0) return [];
 
-        const bestMatches = examples.filter((ex) => this.exampleMatchScore(ex.config) === maxMatchScore);
+        const bestMatches = examples.filter(
+            (ex) => this.exampleMatchScore(ex.config) === maxMatchScore,
+        );
 
-        console.info(`Found ${bestMatches.length} examples with matching configuration score of ${maxMatchScore}.`);
+        console.info(
+            `Found ${bestMatches.length} examples with matching configuration score of ${maxMatchScore}.`,
+        );
 
         return bestMatches;
     }
@@ -60,18 +70,27 @@ class ExampleReader {
         ) as (keyof TargetConfiguration)[];
 
         return exampleKeys.filter(
-            (key) => configKeys.includes(key) && exampleConfig[key] === this._config.content.generator[key],
+            (key) =>
+                configKeys.includes(key) &&
+                exampleConfig[key] === this._config.content.generator[key],
         ).length;
+    }
+
+    private openApiSnippetRequiresInheritance(snippet: OpenApiSnippet): boolean {
+        const snippetContent = JSON.stringify(snippet);
+        return snippetContent.includes('allOf') || snippetContent.includes('oneOf');
     }
 
     readSchemas(): Example<SchemaSnippet>[] {
         const schemaPath = path.resolve(this._examplePoolPath + '/schemas');
         const schemaLocations = fs.readdirSync(schemaPath);
         return schemaLocations
-            .filter((schemaFileName) => schemaFileName.startsWith("s"))
+            .filter((schemaFileName) => schemaFileName.startsWith('s'))
             .map((schemaFileName) => {
                 const config = this.readConfig(this.configFilePath(schemaPath, schemaFileName));
-                const metadata = this.readMetadata(this.metadataFilePath(schemaPath, schemaFileName));
+                const metadata = this.readMetadata(
+                    this.metadataFilePath(schemaPath, schemaFileName),
+                );
                 const snippet = this.readSnippet(
                     this.snippetFilePath(schemaPath, schemaFileName),
                 ) as SchemaSnippet;
@@ -89,7 +108,7 @@ class ExampleReader {
                     config,
                     entry,
                 };
-        });
+            });
     }
 
     private configFilePath(exampleLocationPath: string, exampleId: string): string {
@@ -108,7 +127,7 @@ class ExampleReader {
         const pathsPath = path.resolve(this._examplePoolPath + '/paths');
         const pathLocations = fs.readdirSync(this._examplePoolPath + '/paths');
         return pathLocations
-            .filter((pathFileName) => pathFileName.startsWith("p"))
+            .filter((pathFileName) => pathFileName.startsWith('p'))
             .map((pathFileName) => {
                 const config = this.readConfig(this.configFilePath(pathsPath, pathFileName));
                 const metadata = this.readMetadata(this.metadataFilePath(pathsPath, pathFileName));
@@ -129,7 +148,7 @@ class ExampleReader {
                     config,
                     entry,
                 };
-        });
+            });
     }
 
     readConfig(configPath: string): TargetConfiguration {
