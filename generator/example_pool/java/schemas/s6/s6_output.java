@@ -23,8 +23,8 @@ public class Car extends Vehicle {
     public Car() {
     }
 
-    public Car(int id, String licensePlate) {
-        super(id);
+    public Car(int id, int price, String licensePlate) {
+        super(id, price);
         this.licensePlate = licensePlate;
     }
 
@@ -55,7 +55,8 @@ public class Car extends Vehicle {
     }
 
     public String toString() {
-        return "Car{id=" + super.getId() + ", licensePlate=" + this.licensePlate + "vehicleType=" + this.vehicleType
+        return "Car{id=" + super.getId() + ", price=" + super.getPrice() + "licensePlate=" + this.licensePlate
+                + "vehicleType=" + Car.vehicleType
                 + "}";
     }
 

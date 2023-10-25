@@ -24,12 +24,12 @@ class Car(Vehicle):
         return self.__dict__
 
     def __str__(self):
-        return f'Car(id={self.id}, licensePlate={self.licensePlate}, vehicleType={self.vehicleType})'
+        return f'Car(id={self.id}, price={self.price},  licensePlate={self.licensePlate}, vehicleType={self.vehicleType})'
 
     def __eq__(self, other):
         if not isinstance(other, Car):
             return False
 
-        return (self.id == other.id) and (self.licensePlate == other.licensePlate) and (self.vehicleType == other.vehicleType)
+        return (self.id == other.id) and (self.price == other.price) and(self.licensePlate == other.licensePlate) and (self.vehicleType == other.vehicleType)
 
 Vehicle.register_factory("CAR", Car.fromJson)

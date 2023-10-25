@@ -1,3 +1,4 @@
+import json
 from generated.api.GetDocumentByIdRequest import GetDocumentByIdRequest
 from generated.api.PostDocumentRequest import PostDocumentRequest
 from generated.model.Document import Document
@@ -94,5 +95,5 @@ result = {
 }
 
 print(TEST_OUTPUT_MARKER)
-print(result)
+print(json.dumps(result))
 print(TEST_OUTPUT_MARKER)

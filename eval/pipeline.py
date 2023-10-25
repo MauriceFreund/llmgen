@@ -8,7 +8,7 @@ NUM_TEST_RUNS = 1 if len(sys.argv) <= 1 else int(sys.argv[1])
 OUTPUT_FILE_PATH = "./results/test-results.json"
 TEST_OUTPUT_MARKER = "#+#"
 TARGET_LANGUAGES = ["js", "py", "java"]
-TEST_CASES = ["simple-api"]
+TEST_CASES = ["inheritance"]
 
 def log(msg):
     print("[eval-pipeline]", msg)

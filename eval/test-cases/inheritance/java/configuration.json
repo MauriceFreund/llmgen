@@ -1,14 +1,14 @@
 {
-    "meta": {
-        "model": "gpt-3.5-turbo-16k",
-        "inputPaths": {
-            "openApi": "../input/api.json"
-        },
-        "outputDir": "./src/main/java/llmgeneval/generated/"
+  "meta": {
+    "model": "gpt-3.5-turbo",
+    "inputPaths": {
+      "openApi": "../input/api.json"
     },
-    "generator": {
-        "targetLanguage": "Java",
-        "comments": false,
-        "javaPackagePrefix": "llmgeneval.generated"
-    }
+    "outputDir": "./src/main/java/llmgeneval/generated/"
+  },
+  "generator": {
+    "targetLanguage": "Java",
+    "comments": false,
+    "javaPackagePrefix": "llmgeneval.generated"
+  }
 }
