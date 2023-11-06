@@ -10,37 +10,50 @@ import { OpenApiSnippet } from './input/openapi/OpenApiSpecContent';
 import ExampleReader from './example/selection/ExampleReader';
 import OutputWriter from './output/OutputWriter';
 import { CompletionResult } from './model/CompletionResult';
+import { prettyFormat } from './util/Utility';
 
 async function promptModel<T extends OpenApiSnippet>(
     entry: GeneratorMemoryEntry<T>,
     completedEntries: GeneratorMemoryEntry<T>[],
     memory: GeneratorMemory,
     config: GeneratorConfiguration,
+    outputWriter: OutputWriter,
+    isInEvalMode: boolean,
 ): Promise<CompletionResult> {
     const promptGenerator = new PromptGenerator(config);
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
 
-    console.log(prompt);
+    if (isInEvalMode) {
+        console.log(prettyFormat(prompt));
+    }
 
     const model = new ChatModel(config.content.meta.model);
 
     try {
         const completionResult = await model.complete(prompt);
-        memory.completeEntry(entry.id, completionResult.answer);
+        const completedEntry = memory.completeEntry(entry.id, completionResult.answer);
+
+        console.log('isInEvalMode: ' + isInEvalMode);
+        console.log(prettyFormat(completedEntry));
+        if (isInEvalMode && completedEntry.generatedClassName) {
+            prompt.addAssistantMessage(completionResult.answer);
+            outputWriter.savePrompt(prompt, completedEntry.generatedClassName);
+        }
+
         return completionResult;
     } catch (err) {
-        console.error(err);
         return {
             answer: '',
             requestInfo: {
-                totalTokens: 0,
+                inTokens: 0,
+                outTokens: 0,
                 totalCost: 0,
             },
         };
     }
 }
 
-export async function runGenerator(configPath: string) {
+export async function runGenerator(configPath: string, isInEvalMode: boolean) {
     const specReader = new OpenAPISpecReader();
     const configReader = new GeneratorConfigurationReader();
 
@@ -56,7 +69,8 @@ export async function runGenerator(configPath: string) {
     console.info(`Initialized memory with ${memory.getIncompleteEntries().length} entries.`);
 
     var totalCost = 0;
-    var totalTokens = 0;
+    var totalInTokens = 0;
+    var totalOutTokens = 0;
 
     for (const entry of memory.getIncompleteSchemaEntries()) {
         const examples = exampleReader.readExamples(entry.snippet);
@@ -70,9 +84,12 @@ export async function runGenerator(configPath: string) {
             [...schemaExampleEntries, ...completedEntries],
             memory,
             config,
+            outputWriter,
+            isInEvalMode,
         );
         totalCost += result.requestInfo.totalCost;
-        totalTokens += result.requestInfo.totalTokens;
+        totalInTokens += result.requestInfo.inTokens;
+        totalOutTokens += result.requestInfo.outTokens;
     }
     for (const entry of memory.getIncompletePathEntries()) {
         const examples = exampleReader.readExamples(entry.snippet);
@@ -86,12 +103,20 @@ export async function runGenerator(configPath: string) {
             [...pathExampleEntries, ...completedEntries],
             memory,
             config,
+            outputWriter,
+            isInEvalMode,
         );
         totalCost += result.requestInfo.totalCost;
-        totalTokens += result.requestInfo.totalTokens;
+        totalInTokens += result.requestInfo.inTokens;
+        totalOutTokens += result.requestInfo.outTokens;
     }
 
-    console.log(`Cost: ${totalCost}`);
-    console.log(`Token: ${totalTokens}`);
+    if (isInEvalMode) {
+        outputWriter.writeEvalResults({
+            totalInTokens,
+            totalOutTokens,
+            modelName: config.content.meta.model,
+        });
+    }
     outputWriter.writeOutput(memory);
 }

@@ -1,136 +1,134 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "Reference API",
-        "version": "1.0.0"
-    },
-    "servers": [
-        {
-            "url": "http://localhost:3001"
-        }
-    ],
-    "components": {
-        "schemas": {
-            "Document": {
-                "type": "object",
-
-                "required": [
-                    "id"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    }
-                },
-                 "oneOf": [
-                     {
-                         "$ref": "#/components/schemas/Letter"
-                     },
-                     {
-                         "$ref": "#/components/schemas/Certificate"
-                     }
-                 ],
-                 "discriminator": {
-                     "propertyName": "documentType"
-                 }
-            },
-
-            "Letter": {
-                "allOf": [
-                    { "$ref": "#/components/schemas/Document" },
-                    {
-                        "type": "object",
-                        "required": [
-                            "destination",
-                            "documentType"
-                        ],
-                        "properties": {
-                            "destination": {
-                                "type": "string"
-                            },
-                            "documentType": {
-                                "type": "string",
-                                "enum": ["LETTER"]
-                            }
-                        }
-                    }
-                ]
-            },
-
-
-            "Certificate": {
-                "allOf": [
-                    { "$ref": "#/components/schemas/Document" },
-                    {
-                        "type": "object",
-                        "required": [
-                            "destination",
-                            "documentType"
-                        ],
-                        "properties": {
-                            "certificateHolder": {
-                                "type": "string"
-                            },
-                            "documentType": {
-                                "type": "string",
-                                "enum": ["CERTIFICATE"]
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    },
-    "paths": {
-        "/documents": {
-            "post": {
-                "description": "Save a document",
-                "operationId": "postDocument",
-                "tags": [
-                    "documents"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Document"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Successfully created"
-                    },
-                    "409": {
-                        "description": "Document with id already exists"
-                    }
-                }
-            }
-        },
-        "/documents/{documentId}": {
-            "get": {
-                "description": "Get document by id",
-                "operationId": "getDocumentById",
-                "tags": [
-                    "documents"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Document"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Document with provided id does not exist"
-                    }
-                }
-            }
-        }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Reference API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001"
     }
-} 
+  ],
+  "components": {
+    "schemas": {
+      "Document": {
+        "type": "object",
+
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Letter"
+          },
+          {
+            "$ref": "#/components/schemas/Certificate"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "documentType"
+        }
+      },
+
+      "Letter": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Document" },
+          {
+            "type": "object",
+            "required": ["destination", "documentType"],
+            "properties": {
+              "destination": {
+                "type": "string"
+              },
+              "documentType": {
+                "type": "string",
+                "enum": ["LETTER"]
+              }
+            }
+          }
+        ]
+      },
+
+      "Certificate": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Document" },
+          {
+            "type": "object",
+            "required": ["destination", "documentType"],
+            "properties": {
+              "certificateHolder": {
+                "type": "string"
+              },
+              "documentType": {
+                "type": "string",
+                "enum": ["CERTIFICATE"]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/documents": {
+      "post": {
+        "description": "Save a document",
+        "operationId": "postDocument",
+        "tags": ["documents"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Document"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created"
+          },
+          "409": {
+            "description": "Document with id already exists"
+          }
+        }
+      }
+    },
+    "/documents/{documentId}": {
+      "get": {
+        "description": "Get document by id",
+        "operationId": "getDocumentById",
+        "tags": ["documents"],
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the document",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document with provided id does not exist"
+          }
+        }
+      }
+    }
+  }
+}

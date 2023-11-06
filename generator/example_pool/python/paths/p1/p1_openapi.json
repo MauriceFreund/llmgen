@@ -2,7 +2,7 @@
     "/pets": {
         "get": {
             "summary": "List all pets",
-            "": "listPets",
+            "operationId": "listPets",
             "tags": ["pets"],
             "responses": {
                 "200": {

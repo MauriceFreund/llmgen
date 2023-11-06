@@ -41,15 +41,8 @@ class ChatModel {
     }
 
     private buildRequestInfo(response: CreateChatCompletionResponse): CompletionRequestInfo {
-        const inTokens = response.usage?.prompt_tokens;
-        const outTokens = response.usage?.prompt_tokens;
-
-        if (inTokens === undefined || outTokens === undefined) {
-            return {
-                totalTokens: 0,
-                totalCost: 0,
-            };
-        }
+        const inTokens = response.usage?.prompt_tokens ?? -1;
+        const outTokens = response.usage?.completion_tokens ?? -1;
 
         let cost: number = -1;
         try {
@@ -58,7 +51,8 @@ class ChatModel {
             console.log('Could not calculate request cost.');
         }
         return {
-            totalTokens: inTokens + outTokens,
+            inTokens,
+            outTokens,
             totalCost: cost,
         };
     }

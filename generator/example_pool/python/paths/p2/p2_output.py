@@ -14,7 +14,7 @@ class ListPetsRequest:
 
     baseUrl = 'petstore.swagger.io/v1'
 
-    def list_pet(self) -> List[Pet]:
+    def list_pets(self) -> List[Pet]:
         """
         List all pets
 

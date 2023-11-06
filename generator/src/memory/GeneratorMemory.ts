@@ -52,7 +52,7 @@ class GeneratorMemory {
         this._entries.set(id, newEntry);
     }
 
-    completeEntry(id: string, answer: string) {
+    completeEntry(id: string, answer: string): GeneratorMemoryEntry<OpenApiSnippet> {
         const entry = this._entries.get(id);
         if (entry === undefined) {
             throw Error(
@@ -60,7 +60,9 @@ class GeneratorMemory {
             );
         }
         const generatedClassName = this.getFileNameFromAnswer(answer);
-        this._entries.set(id, { ...entry, answer, generatedClassName });
+        const completedEntry = { ...entry, answer, generatedClassName };
+        this._entries.set(id, completedEntry);
+        return completedEntry;
     }
 
     getIncompleteEntries(): GeneratorMemoryEntry<OpenApiSnippet>[] {
@@ -102,17 +104,21 @@ class GeneratorMemory {
         return [];
     }
 
-    getCompleteEntriesRelevantForPathPrompt(entry: GeneratorMemoryEntry<PathSnippet>): GeneratorMemoryEntry<OpenApiSnippet>[] {
+    getCompleteEntriesRelevantForPathPrompt(
+        entry: GeneratorMemoryEntry<PathSnippet>,
+    ): GeneratorMemoryEntry<OpenApiSnippet>[] {
         const pathEntries = this.getCompletePathEntries();
-        const relevantEntries: GeneratorMemoryEntry<OpenApiSnippet>[] = 
+        const relevantEntries: GeneratorMemoryEntry<OpenApiSnippet>[] =
             this.getSchemaSnippetsReferencedByPath(entry.snippet);
         if (pathEntries.length > 0) {
             relevantEntries.push(pathEntries[0]);
         }
         return relevantEntries;
     }
-    
-    private getSchemaSnippetsReferencedByPath(pathSnippet: PathSnippet): GeneratorMemoryEntry<OpenApiSnippet>[] {
+
+    private getSchemaSnippetsReferencedByPath(
+        pathSnippet: PathSnippet,
+    ): GeneratorMemoryEntry<OpenApiSnippet>[] {
         const completedSchemas = this.getCompleteSchemaEntries();
 
         return completedSchemas.filter((schema) => {

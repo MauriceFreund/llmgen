@@ -14,7 +14,7 @@ class ListPetsRequest:
 
     baseUrl = 'petstore.swagger.io/v1'
 
-    def list_pet(self) -> List[Pet]:
+    def list_pets(self) -> List[Pet]:
         response = requests.get(f'{self.baseUrl}/pets')
         if response.status_code > 299:
             raise ApiException("list_pet request failed with status code " + response.status_code)

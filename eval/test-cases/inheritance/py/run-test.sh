@@ -19,7 +19,7 @@ mockoon-cli start --data ../mock/api-mock.json &
 mockoon_pid=$!
 
 echo Run generator...
-(time npx llmgen configuration.json) 2>&1 | awk '/real/ {print $2}' > runtime
+(time npx llmgen configuration.json eval) 2>&1 | awk '/real/ {print $2}' > runtime
 
 echo Run tests...
 python3 src/tester.py

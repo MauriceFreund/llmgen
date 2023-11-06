@@ -8,7 +8,7 @@ NUM_TEST_RUNS = 1 if len(sys.argv) <= 1 else int(sys.argv[1])
 OUTPUT_FILE_PATH = "./results/test-results.json"
 TEST_OUTPUT_MARKER = "#+#"
 TARGET_LANGUAGES = ["js", "py", "java"]
-TEST_CASES = ["inheritance"]
+TEST_CASES = ["simple-api", "inheritance"]
 
 def log(msg):
     print("[eval-pipeline]", msg)
@@ -44,6 +44,14 @@ def read_runtime(test_dir, target_language):
             runtime = minutes * 60 * 1000 + milliseconds
     return runtime
 
+def read_eval_results(test_dir, target_language):
+    eval_file_path = Path(test_dir) / target_language / "evalResults.json"
+    if (eval_file_path.exists):
+        with open(eval_file_path, 'r') as eval_file:
+            return json.load(eval_file)
+    return None
+    
+
 
 def run_test(test_dir, test_map):
     test_name = test_dir.name
@@ -60,6 +68,9 @@ def run_test(test_dir, test_map):
             log(f"Starting run {i}/{NUM_TEST_RUNS}")
             test_output = run_test_script(target_language_dir.resolve())
             test_output["runtime"] = read_runtime(test_dir, target_language)
+            eval_results = read_eval_results(test_dir, target_language)
+            if eval_results != None:
+                test_output["eval_results"] = eval_results
             test_results.append(test_output)
             test_map[test_name][target_language] = test_results
 

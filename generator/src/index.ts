@@ -2,4 +2,5 @@
 import { runGenerator } from './runGenerator';
 
 const configPath: string = process.argv[2];
-runGenerator(configPath).then(() => console.log('Done.'));
+const isInEvalMode: boolean = process.argv.length === 4 && process.argv[3] === 'eval';
+runGenerator(configPath, isInEvalMode).then(() => console.log('Done.'));

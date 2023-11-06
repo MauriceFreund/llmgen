@@ -14,7 +14,7 @@ class Pet:
 
     @staticmethod
     def fromJson(json):
-        return Pet(json['id'], json.get('name', None), json.get('tag', None))
+        return Pet(json['id'], json['name'], json.get('tag', None))
 
     def toJson(self):
         return self.__dict__
@@ -26,4 +26,6 @@ class Pet:
         if not isinstance(other, Pet):
             return False
 
-        return (self.id == other.id) and (self.name == other.name) and (self.tag == other.tag)
+        return (self.id == other.id) \
+            and (self.name == other.name) \
+            and (self.tag == other.tag)

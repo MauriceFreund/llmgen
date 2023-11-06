@@ -1,9 +1,10 @@
 export interface CompletionResult {
-    answer: string,
-    requestInfo: CompletionRequestInfo,
+    answer: string;
+    requestInfo: CompletionRequestInfo;
 }
 
 export interface CompletionRequestInfo {
-    totalTokens: number,
-    totalCost: number,
+    totalCost: number;
+    inTokens: number;
+    outTokens: number;
 }

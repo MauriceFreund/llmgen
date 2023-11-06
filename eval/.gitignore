@@ -2,6 +2,7 @@
 generated/
 .env
 test-results.json
+evalResults.json
 .idea/
 runtime
 

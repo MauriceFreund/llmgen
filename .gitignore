@@ -5,3 +5,4 @@ resources/
 .env
 .DS_Store
 test-results/
+*.prompt.json
