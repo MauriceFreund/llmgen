@@ -27,7 +27,7 @@ async function promptModel<T extends OpenApiSnippet>(
         console.log(prettyFormat(prompt));
     }
 
-    const model = new ChatModel(config.content.meta.model);
+    const model = new ChatModel(config);
 
     try {
         const completionResult = await model.complete(prompt);
@@ -48,6 +48,11 @@ async function promptModel<T extends OpenApiSnippet>(
                 inTokens: 0,
                 outTokens: 0,
                 totalCost: 0,
+            },
+            modelConfig: {
+                model: 'error',
+                temperature: -1,
+                topP: 1,
             },
         };
     }
@@ -71,6 +76,9 @@ export async function runGenerator(configPath: string, isInEvalMode: boolean) {
     var totalCost = 0;
     var totalInTokens = 0;
     var totalOutTokens = 0;
+    var model = 'undefined';
+    var temperature = -1;
+    var topP = -1;
 
     for (const entry of memory.getIncompleteSchemaEntries()) {
         const examples = exampleReader.readExamples(entry.snippet);
@@ -90,6 +98,9 @@ export async function runGenerator(configPath: string, isInEvalMode: boolean) {
         totalCost += result.requestInfo.totalCost;
         totalInTokens += result.requestInfo.inTokens;
         totalOutTokens += result.requestInfo.outTokens;
+        model = result.modelConfig.model;
+        temperature = result.modelConfig.temperature;
+        topP = result.modelConfig.topP;
     }
     for (const entry of memory.getIncompletePathEntries()) {
         const examples = exampleReader.readExamples(entry.snippet);
@@ -115,7 +126,9 @@ export async function runGenerator(configPath: string, isInEvalMode: boolean) {
         outputWriter.writeEvalResults({
             totalInTokens,
             totalOutTokens,
-            modelName: config.content.meta.model,
+            model,
+            temperature,
+            topP,
         });
     }
     outputWriter.writeOutput(memory);

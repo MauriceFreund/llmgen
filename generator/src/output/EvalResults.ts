@@ -1,5 +1,7 @@
 export interface EvalResults {
     totalInTokens: number;
     totalOutTokens: number;
-    modelName: string;
+    model: string;
+    temperature: number;
+    topP: number;
 }

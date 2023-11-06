@@ -5,6 +5,8 @@ export interface GeneratorConfigurationContent {
 
 export interface MetaConfiguration {
     model: string;
+    temperature?: number;
+    topP?: number;
     inputPaths: MetaConfigurationInputPaths;
     outputDir: string;
 }
@@ -12,7 +14,7 @@ export interface MetaConfiguration {
 export interface TargetConfiguration {
     targetLanguage: 'Python' | 'JavaScript' | 'Java';
     comments: boolean;
-    javaPackagePrefix?: string
+    javaPackagePrefix?: string;
 }
 
 export interface MetaConfigurationInputPaths {

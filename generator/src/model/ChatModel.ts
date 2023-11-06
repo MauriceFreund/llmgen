@@ -2,18 +2,19 @@ import { Configuration, CreateChatCompletionResponse, OpenAIApi } from 'openai';
 import ChatPrompt from '../prompting/ChatPrompt';
 import { CompletionRequestInfo, CompletionResult } from './CompletionResult';
 import { calculateRequestCost } from './RequestCostCalculator';
+import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
 
 class ChatModel {
-    configuration: Configuration;
+    generatorConfiguration: GeneratorConfiguration;
+    apiConfiguration: Configuration;
     openai: OpenAIApi;
-    modelName: string;
 
-    constructor(modelName: string) {
-        this.configuration = new Configuration({
+    constructor(generatorConfiguration: GeneratorConfiguration) {
+        this.generatorConfiguration = generatorConfiguration;
+        this.apiConfiguration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
         });
-        this.openai = new OpenAIApi(this.configuration);
-        this.modelName = modelName;
+        this.openai = new OpenAIApi(this.apiConfiguration);
     }
 
     async complete(prompt: ChatPrompt): Promise<CompletionResult> {
@@ -21,9 +22,10 @@ class ChatModel {
         let requestInfo: CompletionRequestInfo | undefined;
         try {
             const completionParameters = {
-                model: this.modelName,
+                model: this.generatorConfiguration.content.meta.model,
                 messages: prompt.messages,
-                temperature: 0,
+                temperature: this.generatorConfiguration.content.meta.temperature,
+                top_p: this.generatorConfiguration.content.meta.topP,
             };
             const completion = await this.openai.createChatCompletion(completionParameters);
             requestInfo = this.buildRequestInfo(completion.data);
@@ -37,6 +39,11 @@ class ChatModel {
         return Promise.resolve({
             answer,
             requestInfo: requestInfo,
+            modelConfig: {
+                model: this.generatorConfiguration.content.meta.model,
+                temperature: this.generatorConfiguration.content.meta.temperature ?? 1,
+                topP: this.generatorConfiguration.content.meta.topP ?? 1,
+            },
         });
     }
 
@@ -46,7 +53,11 @@ class ChatModel {
 
         let cost: number = -1;
         try {
-            cost = calculateRequestCost(this.modelName, inTokens, outTokens);
+            cost = calculateRequestCost(
+                this.generatorConfiguration.content.meta.model,
+                inTokens,
+                outTokens,
+            );
         } catch {
             console.log('Could not calculate request cost.');
         }
