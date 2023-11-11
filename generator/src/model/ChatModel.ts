@@ -9,13 +9,15 @@ class ChatModel {
     apiConfiguration: Configuration;
     openai: OpenAIApi;
     timeoutId: NodeJS.Timeout | undefined = undefined;
+    isInEvalMode: boolean;
 
-    constructor(generatorConfiguration: GeneratorConfiguration) {
+    constructor(generatorConfiguration: GeneratorConfiguration, isInEvalMode: boolean) {
         this.generatorConfiguration = generatorConfiguration;
         this.apiConfiguration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
         });
         this.openai = new OpenAIApi(this.apiConfiguration);
+        this.isInEvalMode = isInEvalMode;
     }
 
     async complete(prompt: ChatPrompt): Promise<CompletionResult> {
@@ -30,11 +32,14 @@ class ChatModel {
             };
 
             const timeoutPromise = new Promise((_, reject) => {
-                this.timeoutId = setTimeout(() => {
-                    clearTimeout(this.timeoutId);
-                    this.timeoutId = undefined;
-                    reject(new Error('Reached timeout when requesting openai.'));
-                }, 180 * 1000);
+                this.timeoutId = setTimeout(
+                    () => {
+                        clearTimeout(this.timeoutId);
+                        this.timeoutId = undefined;
+                        reject(new Error('Reached timeout when requesting openai.'));
+                    },
+                    5 * 60 * 1000,
+                );
             });
 
             console.log('Sending completion request.');
@@ -43,6 +48,9 @@ class ChatModel {
             const completion = (await Promise.race([completionPromise, timeoutPromise])) as {
                 data: CreateChatCompletionResponse;
             };
+            if (this.isInEvalMode) {
+                console.log(completion);
+            }
             if (this.timeoutId !== undefined) {
                 clearTimeout(this.timeoutId);
                 this.timeoutId = undefined;

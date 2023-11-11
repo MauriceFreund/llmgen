@@ -10,17 +10,31 @@ For each schema generate a model class. The class should have the same name as t
 with the correct data type. At the top of the file add a comment with the content "@file <className>" where <className> is
 the name of the generated class.
 
-The "Generator Configuration" gives you information about the expected output. Here are the parameters and how to interpret 
-them:
-"targetLanguage" := The programming language the generated client should be written in.
-"comments" := If true generate additional documentations comments based on the information from the api spec.
-"javaPackagePrefix" := Only for targetLanguage == "Java". The prefix for the packages of the generated code. All model classes
-reside in "<javaPackagePrefix>.model".
+TASK: The user will provide a snippet from an OpenAPI specification in json format and additional information.
+It is your job to generate client code for the API.
 
-The "Metadata" contains additional information from the original OpenAPI specification, which will help you in understanding
-the snippet and generating the code.
+INPUT: The user message will contain three sections:
+* "Generator Configuration": Contains parameters that influence the generated code
+* "Metadata": Additional information taken from the OpenAPI spec
+* "OpenAPI Snippet": A segment from the OpenAPI spec for which you need to generate the client code
 
-When the user provides multiple snippets try to maintain a consistent still across all your answers. When you have to
+PARAMETERS: The following parameters can be found in the "Generator Configuration":
+* "targetLanguage" := The programming language the generated client should be written in.
+* "comments" := If true generate additional documentations comments based on the information from the api spec.
+* "javaPackagePrefix" := Only for targetLanguage == "Java". The prefix for the packages of the generated code. All path classes
+reside in "<javaPackagePrefix>.api". If you need to import a model class then import it from "<javaPackagePrefix>.model".
+
+Follow these rules when generating the code:
+* OUTPUT: For each schema generate a model class. The class should have the same name as the schema and provide the same attributes
+with the correct data type.
+* NAMING: The name of the class should be equal to the name of the schema. At the top of the file add a comment with the content "@file <className>" where <className> is
+the name of the generated class. 
+* ERROR HANDLING: If the API answers with a status code above 299 throw an ApiException which can be imported from the exception directory.
+Do not use the ApiException for any other error!
+* JSON: When you need to transforming objects to and from json use their toJson and fromJson methods.
+* IMPORTS: The output directory will contain the folders "model", "exception", "api". Your generated classes will be placed into the
+"api" folder. Consider this when importing classes from the "model" and "exception" folders.
+* CONSISTENCY: When the user provides multiple snippets try to maintain a consistent style across all your answers. When you have to
 make assumptions to generate an answer, use the same assumptions across all your answers.
 
 YOUR ANSWER SHOULD ONLY CONTAIN THE PLAIN CODE, NO EXPLANATIONS. GENERATE EXACTLY ONE CLASS AT A TIME.

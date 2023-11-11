@@ -19,6 +19,9 @@ async function promptModel<T extends OpenApiSnippet>(
     outputWriter: OutputWriter,
     isInEvalMode: boolean,
 ): Promise<CompletionResult> {
+    const MAX_RETRIES = 10;
+    let current_try = 1;
+
     const promptGenerator = new PromptGenerator();
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
 
@@ -26,35 +29,39 @@ async function promptModel<T extends OpenApiSnippet>(
         console.log(prompt.toString());
     }
 
-    const model = new ChatModel(config);
+    const model = new ChatModel(config, isInEvalMode);
 
-    try {
-        const completionResult = await model.complete(prompt);
-        const completedEntry = memory.completeEntry(entry.id, completionResult.answer);
+    while (current_try <= MAX_RETRIES) {
+        try {
+            const completionResult = await model.complete(prompt);
+            const completedEntry = memory.completeEntry(entry.id, completionResult.answer);
 
-        if (isInEvalMode && completedEntry.generatedClassName) {
-            prompt.addAssistantMessage(completionResult.answer);
-            outputWriter.savePrompt(prompt, completedEntry.generatedClassName);
+            if (isInEvalMode && completedEntry.generatedClassName) {
+                prompt.addAssistantMessage(completionResult.answer);
+                outputWriter.savePrompt(prompt, completedEntry.generatedClassName);
+            }
+
+            return completionResult;
+        } catch (err) {
+            console.log(`Model completion failed in try ${current_try}/${MAX_RETRIES}`);
+            console.log('Encountered error during model completion.', err);
+            current_try++;
         }
-
-        return completionResult;
-    } catch (err) {
-        console.log('Encountered error during model completion.');
-        return {
-            answer: '',
-            requestInfo: {
-                inTokens: 0,
-                outTokens: 0,
-                totalCost: 0,
-            },
-            modelConfig: {
-                model: 'error',
-                temperature: -1,
-                topP: 1,
-            },
-            encounteredError: err instanceof Error ? err.message : 'unknown err',
-        };
     }
+    return {
+        answer: '',
+        requestInfo: {
+            inTokens: 0,
+            outTokens: 0,
+            totalCost: 0,
+        },
+        modelConfig: {
+            model: 'error',
+            temperature: -1,
+            topP: 1,
+        },
+        encounteredError: 'Reached maximum number of retries for model completion',
+    };
 }
 
 export async function runGenerator(configPath: string, isInEvalMode: boolean) {
