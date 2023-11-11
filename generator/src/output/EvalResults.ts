@@ -4,4 +4,5 @@ export interface EvalResults {
     model: string;
     temperature: number;
     topP: number;
+    errors: string[];
 }

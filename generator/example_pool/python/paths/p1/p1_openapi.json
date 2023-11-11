@@ -1,9 +1,19 @@
 {
-    "/pets": {
-        "get": {
-            "summary": "List all pets",
+    "/pets-by-owner": {
+        "post": {
+            "summary": "List all pets of a given owner",
             "operationId": "listPets",
             "tags": ["pets"],
+            "requestBody": {
+                "description": "The owner",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Owner"
+                        }
+                    }
+                }
+            },
             "responses": {
                 "200": {
                     "description": "An array of pets",

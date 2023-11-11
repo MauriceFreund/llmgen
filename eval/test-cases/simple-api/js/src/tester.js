@@ -47,6 +47,7 @@ async function postInvalidStudent() {
     if (e instanceof ApiException) {
       successes.push('postInvalidStudent')
     } else {
+      console.log(e)
       fails.push(`postInvalidStudent:Expected exception to be instance of ApiException but got ${e.constructor.name}`)
     }
   }

@@ -33,15 +33,20 @@ public class ListPetsRequest {
     }
 
     /**
-     * List all pets
+     * List all pets of a given owner
+     * 
+     * @param owner - The owner
      *
      * @returns List<Pet> - An array of pets
      */
-    public List<Pet> listPets() throws IOException, InterruptedException, ApiException, JsonProcessingException {
+    public List<Pet> listPets(Owner owner)
+            throws IOException, InterruptedException, ApiException, JsonProcessingException {
+        String requestBory = owner.toJson();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + "/pets"))
                 .version(HttpClient.Version.HTTP_2)
-                .GET()
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();

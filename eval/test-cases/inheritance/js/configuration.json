@@ -1,13 +1,14 @@
 {
-    "meta": {
-        "model": "gpt-3.5-turbo",
-        "inputPaths": {
-            "openApi": "../input/api.json"
-        },
-        "outputDir": "./src/generated/"
+  "meta": {
+    "model": "gpt-3.5-turbo",
+    "temperature": 0,
+    "inputPaths": {
+      "openApi": "../input/api.json"
     },
-    "generator": {
-        "targetLanguage": "JavaScript",
-        "comments": false
-    }
+    "outputDir": "./src/generated/"
+  },
+  "generator": {
+    "targetLanguage": "JavaScript",
+    "comments": false
+  }
 }

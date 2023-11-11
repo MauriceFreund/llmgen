@@ -20,15 +20,15 @@ class Vehicle {
         return new Vehicle(json.id, json.price);
     }
 
-    static toJson() {
+    toJson() {
         return JSON.stringify(this);
     }
 }
 
 Vehicle.factories = {};
 
-Vehicle.registerFactory = function(type, factoryFunction) {
+Vehicle.registerFactory = function (type, factoryFunction) {
     Vehicle.factories[type] = factoryFunction;
-}
+};
 
 export default Vehicle;

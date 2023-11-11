@@ -10,7 +10,6 @@ import { OpenApiSnippet } from './input/openapi/OpenApiSpecContent';
 import ExampleReader from './example/selection/ExampleReader';
 import OutputWriter from './output/OutputWriter';
 import { CompletionResult } from './model/CompletionResult';
-import { prettyFormat } from './util/Utility';
 
 async function promptModel<T extends OpenApiSnippet>(
     entry: GeneratorMemoryEntry<T>,
@@ -20,11 +19,11 @@ async function promptModel<T extends OpenApiSnippet>(
     outputWriter: OutputWriter,
     isInEvalMode: boolean,
 ): Promise<CompletionResult> {
-    const promptGenerator = new PromptGenerator(config);
+    const promptGenerator = new PromptGenerator();
     const prompt = promptGenerator.generatePrompt(entry, completedEntries);
 
     if (isInEvalMode) {
-        console.log(prettyFormat(prompt));
+        console.log(prompt.toString());
     }
 
     const model = new ChatModel(config);
@@ -33,8 +32,6 @@ async function promptModel<T extends OpenApiSnippet>(
         const completionResult = await model.complete(prompt);
         const completedEntry = memory.completeEntry(entry.id, completionResult.answer);
 
-        console.log('isInEvalMode: ' + isInEvalMode);
-        console.log(prettyFormat(completedEntry));
         if (isInEvalMode && completedEntry.generatedClassName) {
             prompt.addAssistantMessage(completionResult.answer);
             outputWriter.savePrompt(prompt, completedEntry.generatedClassName);
@@ -42,6 +39,7 @@ async function promptModel<T extends OpenApiSnippet>(
 
         return completionResult;
     } catch (err) {
+        console.log('Encountered error during model completion.');
         return {
             answer: '',
             requestInfo: {
@@ -54,6 +52,7 @@ async function promptModel<T extends OpenApiSnippet>(
                 temperature: -1,
                 topP: 1,
             },
+            encounteredError: err instanceof Error ? err.message : 'unknown err',
         };
     }
 }
@@ -79,6 +78,7 @@ export async function runGenerator(configPath: string, isInEvalMode: boolean) {
     var model = 'undefined';
     var temperature = -1;
     var topP = -1;
+    const errors = [];
 
     for (const entry of memory.getIncompleteSchemaEntries()) {
         const examples = exampleReader.readExamples(entry.snippet);
@@ -101,6 +101,7 @@ export async function runGenerator(configPath: string, isInEvalMode: boolean) {
         model = result.modelConfig.model;
         temperature = result.modelConfig.temperature;
         topP = result.modelConfig.topP;
+        if (result.encounteredError) errors.push(result.encounteredError);
     }
     for (const entry of memory.getIncompletePathEntries()) {
         const examples = exampleReader.readExamples(entry.snippet);
@@ -129,6 +130,7 @@ export async function runGenerator(configPath: string, isInEvalMode: boolean) {
             model,
             temperature,
             topP,
+            errors,
         });
     }
     outputWriter.writeOutput(memory);

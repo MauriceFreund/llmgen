@@ -45,6 +45,7 @@ class GeneratorMemory {
         const id = randomUUID();
         const newEntry: GeneratorMemoryEntry<OpenApiSnippet> = {
             id,
+            configuration: this._configuration.content.generator,
             snippet,
             metadata,
             entryType,
@@ -108,12 +109,9 @@ class GeneratorMemory {
         entry: GeneratorMemoryEntry<PathSnippet>,
     ): GeneratorMemoryEntry<OpenApiSnippet>[] {
         const pathEntries = this.getCompletePathEntries();
-        const relevantEntries: GeneratorMemoryEntry<OpenApiSnippet>[] =
-            this.getSchemaSnippetsReferencedByPath(entry.snippet);
-        if (pathEntries.length > 0) {
-            relevantEntries.push(pathEntries[0]);
-        }
-        return relevantEntries;
+
+        if (pathEntries.length > 0) return [pathEntries[0]];
+        return [];
     }
 
     private getSchemaSnippetsReferencedByPath(

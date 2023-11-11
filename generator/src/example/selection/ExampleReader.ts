@@ -98,6 +98,7 @@ class ExampleReader {
 
                 const entry: GeneratorMemoryEntry<SchemaSnippet> = {
                     id: randomUUID(),
+                    configuration: config,
                     metadata,
                     snippet,
                     answer,
@@ -138,6 +139,7 @@ class ExampleReader {
 
                 const entry: GeneratorMemoryEntry<PathSnippet> = {
                     id: randomUUID(),
+                    configuration: config,
                     metadata,
                     snippet,
                     answer,

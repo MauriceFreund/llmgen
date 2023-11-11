@@ -1,24 +1,19 @@
 import { OpenApiSpecMetadata, SchemaSnippet } from '../input/openapi/SpecSplittingOutput';
 import { OpenApiSpecPath } from '../input/openapi/OpenApiSpecContent';
-import GeneratorConfiguration from '../input/configuration/GeneratorConfiguration';
 import { ChatCompletionRequestMessage } from 'openai';
 import { prettyFormat } from '../util/Utility';
 import Mustache from 'mustache';
 import { getUserMessageTemplate } from './templating/TemplateSelector';
+import { TargetConfiguration } from '../input/configuration/GeneratorConfigurationContent';
 
 class UserMessageGenerator {
-    private readonly _configuration: GeneratorConfiguration;
-
-    constructor(configuration: GeneratorConfiguration) {
-        this._configuration = configuration;
-    }
-
     generateMessage(
         openApiSnippet: SchemaSnippet | OpenApiSpecPath,
+        configuration: TargetConfiguration,
         metadata: OpenApiSpecMetadata,
     ): ChatCompletionRequestMessage {
         const view = {
-            config: prettyFormat(this._configuration.content.generator),
+            config: prettyFormat(configuration),
             metadata: prettyFormat(metadata),
             openApiSnippet: prettyFormat(openApiSnippet),
         };

@@ -8,6 +8,7 @@ class ChatModel {
     generatorConfiguration: GeneratorConfiguration;
     apiConfiguration: Configuration;
     openai: OpenAIApi;
+    timeoutId: NodeJS.Timeout | undefined = undefined;
 
     constructor(generatorConfiguration: GeneratorConfiguration) {
         this.generatorConfiguration = generatorConfiguration;
@@ -27,10 +28,36 @@ class ChatModel {
                 temperature: this.generatorConfiguration.content.meta.temperature,
                 top_p: this.generatorConfiguration.content.meta.topP,
             };
-            const completion = await this.openai.createChatCompletion(completionParameters);
+
+            const timeoutPromise = new Promise((_, reject) => {
+                this.timeoutId = setTimeout(() => {
+                    clearTimeout(this.timeoutId);
+                    this.timeoutId = undefined;
+                    reject(new Error('Reached timeout when requesting openai.'));
+                }, 180 * 1000);
+            });
+
+            console.log('Sending completion request.');
+            console.time('request');
+            const completionPromise = this.openai.createChatCompletion(completionParameters);
+            const completion = (await Promise.race([completionPromise, timeoutPromise])) as {
+                data: CreateChatCompletionResponse;
+            };
+            if (this.timeoutId !== undefined) {
+                clearTimeout(this.timeoutId);
+                this.timeoutId = undefined;
+            }
+            console.log('Received completion response.');
+            console.timeEnd('request');
+
             requestInfo = this.buildRequestInfo(completion.data);
             answer = completion.data.choices[0].message?.content;
         } catch (e) {
+            if (this.timeoutId !== undefined) {
+                clearTimeout(this.timeoutId);
+                this.timeoutId = undefined;
+            }
+            console.error('Encountered error.', e);
             return Promise.reject(e);
         }
         if (answer === undefined) {

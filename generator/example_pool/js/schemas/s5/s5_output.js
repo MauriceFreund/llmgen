@@ -3,24 +3,24 @@
  *
  * @file Car
  */
-import Vehicle from "./Vehicle.js";
+import Vehicle from './Vehicle.js';
 
 class Car extends Vehicle {
     constructor(id, price, licensePlate) {
         super(id, price);
         this.licensePlate = licensePlate;
-        this.vehicleType = "CAR";
+        this.vehicleType = 'CAR';
     }
 
     static fromJson(json) {
-        return new Car(json.id, json.price, json.licensePlate)
+        return new Car(json.id, json.price, json.licensePlate);
     }
 
-    static toJson() {
+    toJson() {
         return JSON.stringify(this);
     }
 }
 
-Vehicle.registerFactory("CAR", Car.fromJson);
+Vehicle.registerFactory('CAR', Car.fromJson);
 
 export default Car;

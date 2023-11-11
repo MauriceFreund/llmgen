@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dx.example.model.Pet;
+import dx.example.model.Owner;
 import dx.example.exception.ApiException;
 
 import java.io.IOException;
@@ -32,11 +33,14 @@ public class ListPetsRequest {
         baseUrl = "petstore.swagger.io/v1";
     }
 
-    public List<Pet> listPets() throws IOException, InterruptedException, ApiException, JsonProcessingException {
+    public List<Pet> listPets(Owner owner)
+            throws IOException, InterruptedException, ApiException, JsonProcessingException {
+        String requestBory = owner.toJson();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + "/pets"))
                 .version(HttpClient.Version.HTTP_2)
-                .GET()
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();

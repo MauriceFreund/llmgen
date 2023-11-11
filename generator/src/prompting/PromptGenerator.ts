@@ -11,9 +11,9 @@ class PromptGenerator {
     private _systemMessageGenerator: SystemMessageGenerator;
     private _userMessageGenerator: UserMessageGenerator;
 
-    constructor(config: GeneratorConfiguration) {
+    constructor() {
         this._systemMessageGenerator = new SystemMessageGenerator();
-        this._userMessageGenerator = new UserMessageGenerator(config);
+        this._userMessageGenerator = new UserMessageGenerator();
     }
 
     generatePrompts(memory: GeneratorMemory): ChatPrompt[] {
@@ -21,6 +21,7 @@ class PromptGenerator {
             const systemMessage = this._systemMessageGenerator.getMessage(entry.entryType);
             const message = this._userMessageGenerator.generateMessage(
                 entry.snippet,
+                entry.configuration,
                 entry.metadata,
             );
             return new ChatPrompt([systemMessage, message]);
@@ -37,6 +38,7 @@ class PromptGenerator {
         );
         const message = this._userMessageGenerator.generateMessage(
             memoryEntry.snippet,
+            memoryEntry.configuration,
             memoryEntry.metadata,
         );
         return new ChatPrompt([systemMessage, ...previousMessages, message]);
@@ -45,7 +47,11 @@ class PromptGenerator {
     private getMessagesFromCompletedMemoryEntry(
         entry: GeneratorMemoryEntry<OpenApiSnippet>,
     ): ChatCompletionRequestMessage[] {
-        const request = this._userMessageGenerator.generateMessage(entry.snippet, entry.metadata);
+        const request = this._userMessageGenerator.generateMessage(
+            entry.snippet,
+            entry.configuration,
+            entry.metadata,
+        );
         const answer: ChatCompletionRequestMessage = {
             role: 'assistant',
             content: entry.answer,

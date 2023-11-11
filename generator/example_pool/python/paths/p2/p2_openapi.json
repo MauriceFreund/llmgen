@@ -1,25 +1,33 @@
 {
-  "/pets": {
-    "get": {
-      "summary": "List all pets",
-      "operationId": "listPets",
-      "tags": [
-        "pets"
-      ],
-      "responses": {
-        "200": {
-          "description": "An array of pets",
-          "schema": {
-            "$ref": "#/definitions/Pets"
-          }
-        },
-        "default": {
-          "description": "unexpected error",
-          "schema": {
-            "$ref": "#/definitions/Error"
-          }
+    "/pets-by-owner": {
+        "post": {
+            "summary": "List all pets of a given owner",
+            "operationId": "listPets",
+            "tags": ["pets"],
+            "requestBody": {
+                "description": "The owner",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Owner"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "An array of pets",
+                    "schema": {
+                        "$ref": "#/definitions/Pets"
+                    }
+                },
+                "default": {
+                    "description": "unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }

@@ -77,7 +77,7 @@ class OutputWriter {
 
     savePrompt(prompt: ChatPrompt, fileName: string) {
         try {
-            fs.writeFileSync(`./${fileName}.prompt.json`, prettyFormat(prompt));
+            fs.writeFileSync(`./${fileName}.prompt`, prompt.toString());
         } catch (e) {
             console.error('Could not write evaluation results. Reason: ' + e);
         }

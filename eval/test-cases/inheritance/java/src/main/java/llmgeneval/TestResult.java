@@ -3,17 +3,18 @@ package llmgeneval;
 import java.util.List;
 
 class TestResult {
-    public List<String> successfulTests;
-    public List<String> failedTests;
-    public int numSuccesses;
-    public int numTests;
-    public double successRate;
+    public List<String> successful_tests;
+    public List<String> failed_tests;
+    public int num_successes;
+    public int num_tests;
+    public double success_rate;
 
-    public TestResult(List<String> successfulTests, List<String> failedTests, int numSuccesses, int numTests, double successRate) {
-        this.successfulTests = successfulTests;
-        this.failedTests = failedTests;
-        this.numSuccesses = numSuccesses;
-        this.numTests = numTests;
-        this.successRate = successRate;
+    public TestResult(List<String> successfulTests, List<String> failedTests, int numSuccesses, int numTests,
+            double successRate) {
+        this.successful_tests = successfulTests;
+        this.failed_tests = failedTests;
+        this.num_successes = numSuccesses;
+        this.num_tests = numTests;
+        this.success_rate = successRate;
     }
 }

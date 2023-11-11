@@ -1,3 +1,4 @@
+import { TargetConfiguration } from '../input/configuration/GeneratorConfigurationContent';
 import { OpenApiSnippet } from '../input/openapi/OpenApiSpecContent';
 import {
     OpenApiSpecMetadata,
@@ -10,6 +11,7 @@ export type MemoryEntryType = 'schema' | 'path';
 export interface GeneratorMemoryEntry<T extends OpenApiSnippet> {
     id: string;
     snippet: T;
+    configuration: TargetConfiguration;
     metadata: OpenApiSpecMetadata;
     entryType: MemoryEntryType;
     answer?: string;

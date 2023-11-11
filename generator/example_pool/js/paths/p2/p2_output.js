@@ -10,12 +10,19 @@ class ListPetsRequest {
     baseUrl = 'http://petstore.swagger.io/v1';
 
     /**
-     * List all pets
+     * List all pets of a given owner
      *
+     * @param owner - The owner
      * @returns Pet[] - An array of pets
      */
-    async listPets() {
-        const response = await fetch(`${this.baseUrl}/pets`);
+    async listPets(owner) {
+        const response = await fetch(`${this.baseUrl}/pets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: owner.toJson(),
+        });
         if (response.status > 299) {
             throw new ApiException('listPets request failed with status code ' + response.status);
         }

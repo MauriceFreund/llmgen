@@ -18,7 +18,7 @@ class Pet {
         return new Pet(json.id, json.name, json.tag);
     }
 
-    static toJson() {
+    toJson() {
         return JSON.stringify(this);
     }
 }

@@ -14,14 +14,17 @@ class ListPetsRequest:
 
     baseUrl = 'petstore.swagger.io/v1'
 
-    def list_pets(self) -> List[Pet]:
+    def list_pets(self, owner) -> List[Pet]:
         """
-        List all pets
+        List all pets of a given owner
+        
+        Args:
+            owner (Owner): The owner
 
         Returns:
             list[Pet]: A list of pets
         """
-        response = requests.get(f'{self.baseUrl}/pets')
+        response = requests.post(f'{self.baseUrl}/pets', json=owner.toJson())
         if response.status_code > 299:
-            raise ApiException("list_pet request failed with status code " + response.status_code)
+            raise ApiException(f"list_pet request failed with status code {response.status_code}")
         return [Pet.fromJson(pet) for pet in response.json()]

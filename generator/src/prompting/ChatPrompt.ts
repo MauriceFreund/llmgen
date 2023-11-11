@@ -9,7 +9,7 @@ class ChatPrompt {
     }
 
     get messages() {
-        return this._messages;
+        return this._messages.map((msg) => ({ ...msg, content: this.cleanMessage(msg.content) }));
     }
 
     addMessage(message: ChatCompletionRequestMessage) {
@@ -28,15 +28,18 @@ class ChatPrompt {
         this.addMessage({ role: 'user', content });
     }
 
-    log() {
+    private cleanMessage(msg: string | undefined) {
+        return msg?.replace(/&quot;/g, '"').replace(/&#x2F;/g, '/');
+    }
+
+    toString() {
         const messageStrings = this._messages.map((msg) => {
-            const msgString = `${msg.role}: ${msg.content ?? ""}`;
-            return msgString
-                .replace(/&quot;/g, '"')
-                .replace(/&#x2F;/g, '/');
+            const msgString = `[${msg.role}]:\n${msg.content ?? ''}`;
+            return this.cleanMessage(msgString);
         });
-        const promptString = messageStrings.join('\n\n');
-        console.log(promptString);
+        return messageStrings.join(
+            '\n------------------------------------------------------------------\n',
+        );
     }
 }
 

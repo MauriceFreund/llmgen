@@ -2,6 +2,7 @@ export interface CompletionResult {
     answer: string;
     requestInfo: CompletionRequestInfo;
     modelConfig: CompletionModelConfig;
+    encounteredError?: string;
 }
 
 export interface CompletionModelConfig {
