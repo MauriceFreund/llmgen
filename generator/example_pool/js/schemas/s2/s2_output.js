@@ -1,10 +1,4 @@
 /**
- * This file was auto generated. Do not modify its content.
- *
- * @file Pet
- */
-
-/**
  * Represents a pet
  */
 class Pet {

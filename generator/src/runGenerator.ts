@@ -141,4 +141,5 @@ export async function runGenerator(configPath: string, isInEvalMode: boolean) {
         });
     }
     outputWriter.writeOutput(memory);
+    process.exit(0);
 }

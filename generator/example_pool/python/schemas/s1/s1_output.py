@@ -1,10 +1,3 @@
-"""
-This file was auto generated. Do not modify its content.
-
-@file Pet
-"""
-
-
 class Pet:
 
     def __init__(self, id, name=None, tag=None):

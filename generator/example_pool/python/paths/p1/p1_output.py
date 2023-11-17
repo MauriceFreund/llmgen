@@ -1,8 +1,3 @@
-"""
-This file was auto generated. Do not modify its content.
-
-@file ListPetsRequest
-"""
 import requests
 from typing import List
 

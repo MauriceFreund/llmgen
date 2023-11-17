@@ -1,9 +1,3 @@
-"""
-This file was auto generated. Do not modify its content.
-
-@file Car
-"""
-
 from .Vehicle import Vehicle
 
 class Car(Vehicle):

@@ -1,9 +1,3 @@
-/**
- * This file was auto generated. Do not modify its content.
- *
- * @file Pet
- */
-
 package dx.example.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -82,8 +76,10 @@ public class Pet {
         Pet otherPet = (Pet) obj;
 
         return this.id == otherPet.id
-                && ((this.name == null && otherPet.name == null) || (this.name != null && this.name.equals(otherPet.name)))
-                && ((this.tag == null && otherPet.tag == null) || (this.tag != null && this.tag.equals(otherPet.tagId)));
+                && ((this.name == null && otherPet.name == null)
+                        || (this.name != null && this.name.equals(otherPet.name)))
+                && ((this.tag == null && otherPet.tag == null)
+                        || (this.tag != null && this.tag.equals(otherPet.tagId)));
     }
 
     @Override

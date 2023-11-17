@@ -1,9 +1,3 @@
-/**
- * This file was auto generated. Do not modify its content.
- *
- * @file Vehicle
- */
-
 package model.vehicles.model;
 
 import java.util.HashMap;

@@ -1,9 +1,3 @@
-/**
- * This file was auto generated. Do not modify its content.
- *
- * @file ListPetsRequest
- */
-
 package dx.example.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;

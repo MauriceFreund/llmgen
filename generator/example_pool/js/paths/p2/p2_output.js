@@ -1,11 +1,6 @@
 import Pet from '../model/Pet.js';
 import ApiException from '../exceptionmodelmodel/ApiException.js';
 
-/**
- * This file was auto generated. Do not modify its content.
- *
- * @file ListPetsRequest
- */
 class ListPetsRequest {
     baseUrl = 'http://petstore.swagger.io/v1';
 

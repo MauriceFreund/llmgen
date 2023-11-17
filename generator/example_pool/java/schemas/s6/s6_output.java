@@ -1,9 +1,3 @@
-/**
- * This file was auto generated. Do not modify its content.
- *
- * @file Car
- */
-
 package inh.pack.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

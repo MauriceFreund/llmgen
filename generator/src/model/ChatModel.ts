@@ -30,15 +30,12 @@ class ChatModel {
                 temperature: this.generatorConfiguration.content.meta.temperature,
                 top_p: this.generatorConfiguration.content.meta.topP,
             };
-
             const timeoutPromise = new Promise((_, reject) => {
                 this.timeoutId = setTimeout(
                     () => {
-                        clearTimeout(this.timeoutId);
-                        this.timeoutId = undefined;
                         reject(new Error('Reached timeout when requesting openai.'));
                     },
-                    5 * 60 * 1000,
+                    2 * 60 * 1000,
                 );
             });
 
@@ -60,6 +57,7 @@ class ChatModel {
 
             requestInfo = this.buildRequestInfo(completion.data);
             answer = completion.data.choices[0].message?.content;
+            console.log('Model answer: ', answer);
         } catch (e) {
             if (this.timeoutId !== undefined) {
                 clearTimeout(this.timeoutId);

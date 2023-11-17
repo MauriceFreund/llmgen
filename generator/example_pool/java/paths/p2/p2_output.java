@@ -1,15 +1,10 @@
-/**
- * This file was auto generated. Do not modify its content.
- *
- * @file ListPetsRequest
- */
-
 package dx.example.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dx.example.model.Pet;
+import dx.example.model.Owner;
 import dx.example.exception.ApiException;
 
 import java.io.IOException;

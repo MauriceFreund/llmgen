@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 
 
-NUM_TEST_RUNS = 1 if len(sys.argv) <= 1 else int(sys.argv[1])
+NUM_TEST_RUNS = 5 if len(sys.argv) <= 1 else int(sys.argv[1])
 OUTPUT_DIR = "./results"
 OUTPUT_FILE_NAME = "test-results.json"
 TEST_OUTPUT_MARKER = "#+#"

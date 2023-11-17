@@ -1,10 +1,4 @@
 /**
- * This file was auto generated. Do not modify its content.
- *
- * @file Vehicle
- */
-
-/**
  * The base class of all vehicles
  */
 class Vehicle {
