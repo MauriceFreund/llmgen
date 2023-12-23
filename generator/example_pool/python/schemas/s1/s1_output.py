@@ -13,7 +13,7 @@ class Pet:
         return self.__dict__
 
     def __str__(self):
-        return f'Student(id={self.id}, name={self.name}, tag={self.tag})'
+        return f'Pet(id={self.id}, name={self.name}, tag={self.tag})'
 
     def __eq__(self, other):
         if not isinstance(other, Pet):
