@@ -24,13 +24,6 @@ RUN npm i -g @mockoon/cli
 
 WORKDIR /usr/pipeline
 
-COPY ./generator ./generator
-COPY ./eval ./eval
+COPY ./run-eval-pipeline.sh /usr/pipeline/run-eval-pipeline.sh
 
-WORKDIR /usr/pipeline/generator
-
-RUN npm i && ./relink
-
-WORKDIR /usr/pipeline/eval
-
-CMD ["python3", "pipeline.py", "5"]
+CMD ["bash", "run-eval-pipeline.sh"]

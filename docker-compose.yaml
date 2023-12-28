@@ -6,6 +6,9 @@ services:
       - .env
     volumes:
       - type: bind
-        source: ./test-results
-        target: /usr/pipeline/eval/results
+        source: ./eval
+        target: /usr/pipeline/eval
+      - type: bind
+        source: ./generator
+        target: /usr/pipeline/generator
 
