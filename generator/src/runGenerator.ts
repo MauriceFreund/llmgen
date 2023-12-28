@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import OpenAPISpecReader from './input/openapi/OpenAPISpecReader';
 import PromptGenerator from './prompting/PromptGenerator';
 import ChatModel from './model/ChatModel';
