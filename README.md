@@ -118,4 +118,6 @@ of each combination of test scenario and target language. For example the
 configuration file of the scenario "simple-api" and the language "JavaScript"
 is located in "eval/test-scenarios/simple-api/js/configuration.json"
 
-The results of the evaluation will be saved in the folder "eval/results".
+The results of the evaluation will be saved in the folder "eval/results". The
+generated code can be found in the "src" folder inside each target language 
+directory.
