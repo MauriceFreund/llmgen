@@ -7,6 +7,9 @@ This repo contains two parts. The directory 'generator' contains the implementat
 of the generator while 'eval' implements an evaluation pipeline for the
 generator.
 
+NOTE: Running the generator as described below will require calls to the OpenAI
+api which will introduce costs on the OpenAI account you are using.
+
 ## Using the generator
 
 Prerequisites:
@@ -88,7 +91,7 @@ llmgen <name of the configuration file>
 ``` 
 
 ## Running the evaluation
-
+ w
 The repository includes an evaluation pipeline designed for testing the 
 generators capabilities. The pipeline contains two test scenarions named 
 "simple-api" and "inheritance". Each test scenario in turn contains configuration
@@ -98,7 +101,16 @@ The pipeline will start a mockserver for each test scenario, generate the code
 for an OpenAPI spec in each target language and run a set of tests to check the generated api client.
 The easiest way to run the pipeline is by using the docker-compose file located
 in the root of the repository. The corresponding docker file installs all 
-the dependencies that are necessary to run the pipeline.
+the dependencies that are necessary to run the pipeline. To run the pipeline
+you need to install docker and docker-compose and run this command in the
+directory containing the docker-compose file:
+
+```
+docker-compose up
+```
+
+The generation process takes a while to complete. Therefore it may take a couple
+of minutes to complete the pipeline.
 
 Each generation process is run with a default set of configuration parameters.
 If you wish to change those parameters you need to edit the configuration file
